@@ -93,6 +93,8 @@
           text-align:center;font-size:12px;color:var(--sub);letter-spacing:.1em;padding-bottom:4px}
       .wk{
         border-top:1px solid var(--line);padding:3px 0 5px;cursor:pointer;touch-action:manipulation}
+      #calb{overflow:hidden}
+      #calg{will-change:transform,opacity}
       #t2 .ym{flex:2;display:flex;align-items:center;justify-content:center;gap:8px;font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;font-size:18px;font-weight:700;letter-spacing:.08em;cursor:pointer}
       #t2 .ym::before{content:"";width:6px;height:6px;transform:rotate(45deg);background:var(--ac2);box-shadow:0 0 8px var(--ac2)}
       #t2 .ym small{font-size:11px;color:var(--ac2)}
@@ -331,6 +333,18 @@
         document.querySelectorAll('#sb [data-py]').forEach(b=>b.onclick=()=>{CA.y=+b.dataset.py;ymPick();cal()});
         document.querySelectorAll('#sb [data-pm]').forEach(b=>b.onclick=()=>{CA.m=+b.dataset.pm;$('#sheet').classList.remove('on','pop');cal()});
       }
+      function slideCal(dir){
+        const g=$('#calg');
+        if(!g){CA.m+=dir;if(CA.m<0){CA.m=11;CA.y--}if(CA.m>11){CA.m=0;CA.y++}cal();return}
+        g.style.transition='transform .18s ease-out,opacity .18s ease-out';
+        g.style.transform='translateX('+(dir>0?-45:45)+'%)';g.style.opacity='0';
+        setTimeout(()=>{
+          CA.m+=dir;if(CA.m<0){CA.m=11;CA.y--}if(CA.m>11){CA.m=0;CA.y++}cal();
+          const ng=$('#calg');
+          if(ng){ng.style.transform='translateX('+(dir>0?45:-45)+'%)';ng.style.opacity='0';ng.offsetWidth;
+          ng.style.transition='transform .22s cubic-bezier(.2,.8,.2,1),opacity .22s';ng.style.transform='';ng.style.opacity=''}
+        },160);
+      }
       function cal(go){const f=new Date(CA.y,CA.m,1),ws=new Date(f);ws.setDate(1-f.getDay());const lt=new Date(CA.y,CA.m+1,0),we=new Date(lt);we.setDate(lt.getDate()+(6-lt.getDay()));
       const nwk=Math.round((we-ws)/864e5+1)/7;let wk='';
       for(let w=0;w<nwk;w++){const d0=new Date(ws);d0.setDate(ws.getDate()+w*7);const ds=[0,1,2,3,4,5,6].map(i=>{const d=new Date(d0);d.setDate(d0.getDate()+i);return iso(d)});
@@ -343,17 +357,21 @@
         wk+='<div class="wk" data-d="'+ds[0]+'"><div class="nums">'+nums+'</div>'+(ln.length?'<div class="bars" style="grid-template-rows:repeat('+ln.length+',17px)">'+bars+'</div>':'')+'<div class="dots">'+dots+'</div>'+(hid?'<div class="more">ほか'+hid+'件</div>':'')+'</div>'}
       const he=CA.hl!=null?EV[CA.hl]:null,ev=CA.sel?(DM[CA.sel]||[]).concat(annOn(CA.sel)).sort((x,y)=>x.l-y.l):[];
       const det=CA.sel?'<h2>'+md(CA.sel)+'（'+WD[pd(CA.sel).getDay()]+'）</h2><div class="card">'+(ev.map(evC).join('')||'<div class="sub">予定なし</div>')+'</div>':(he?'<h2>選択中の予定</h2><div class="card">'+evC(he)+'</div>':'');
-      $('#t2').innerHTML='<div class="row" style="align-items:center"><button class="btn" id="pv">◀</button><button class="btn ym" id="ym">'+CA.y+'年 '+(CA.m+1)+'月<small>▾</small></button><button class="btn" id="nx">▶</button><button class="btn" id="td">今日</button></div><div class="card'+(CA.hl!=null?' dim':'')+'" id="calb" style="padding:10px 6px"><div class="wd">'+[...'日月火水木金土'].map(x=>'<div>'+x+'</div>').join('')+'</div>'+wk+'</div><div class="lg">'+LN.map((x,i)=>'<span><i style="background:'+LC[i]+'"></i>'+x+'</span>').join('')+'</div><div id="evl">'+det+'</div>';
-      $('#pv').onclick=()=>{CA.m--;if(CA.m<0){CA.m=11;CA.y--}cal()};$('#nx').onclick=()=>{CA.m++;if(CA.m>11){CA.m=0;CA.y++}cal()};
+      const ys=Array.from({length:nw.getFullYear()-2014+3},(_,i)=>2014+i).map(y=>'<option value="'+y+'"'+(y==CA.y?' selected':'')+'>'+y+'年</option>').join('');
+      const ms=Array.from({length:12},(_,i)=>'<option value="'+i+'"'+(i==CA.m?' selected':'')+'>'+(i+1)+'月</option>').join('');
+      $('#t2').innerHTML='<div class="row" style="align-items:center"><button class="btn" id="pv">◀</button><button class="btn ym" id="ym">'+CA.y+'年 '+(CA.m+1)+'月<small>▾</small></button><button class="btn" id="nx">▶</button><button class="btn" id="td">今日</button></div><div class="card'+(CA.hl!=null?' dim':'')+'" id="calb" style="padding:10px 6px"><div id="calg"><div class="wd">'+[...'日月火水木金土'].map(x=>'<div>'+x+'</div>').join('')+'</div>'+wk+'</div></div><div class="lg">'+LN.map((x,i)=>'<span><i style="background:'+LC[i]+'"></i>'+x+'</span>').join('')+'</div><div id="evl">'+det+'</div>';
+      $('#pv').onclick=()=>slideCal(-1);$('#nx').onclick=()=>slideCal(1);
       $('#ym').onclick=ymPick;
       $('#td').onclick=()=>{CA.y=nw.getFullYear();CA.m=nw.getMonth();CA.sel=T;CA.hl=null;cal()};if(go)$('#evl').scrollIntoView({behavior:'smooth',block:'nearest'})}
-      let sx=0,sy=0;$('#t2').ontouchstart=e=>{if(e.target.closest('#calb')&&e.touches.length==1){sx=e.touches[0].clientX;sy=e.touches[0].clientY}else sx=0};
-      $('#t2').ontouchend=e=>{if(!sx)return;const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;sx=0;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5){if(dx<0){CA.m++;if(CA.m>11){CA.m=0;CA.y++}}else{CA.m--;if(CA.m<0){CA.m=11;CA.y--}}cal()}};
+      let sx=0,sy=0,dr=0,wt=0;$('#t2').ontouchstart=e=>{if(e.target.closest('#calb')&&e.touches.length==1){sx=e.touches[0].clientX;sy=e.touches[0].clientY;dr=0;const g=$('#calg');if(g)g.style.transition='none'}else sx=0};
+      $('#t2').ontouchmove=e=>{if(!sx)return;const dx=e.touches[0].clientX-sx,dy=e.touches[0].clientY-sy;if(!dr&&Math.abs(dx)>10&&Math.abs(dx)>Math.abs(dy)*1.2)dr=1;if(dr){e.preventDefault();const g=$('#calg');if(g){g.style.transform='translateX('+dx+'px)';g.style.opacity=Math.max(.35,1-Math.abs(dx)/280)}}};
+      $('#t2').ontouchend=e=>{if(!sx)return;const dx=e.changedTouches[0].clientX-sx;sx=0;if(dr){dr=0;if(Math.abs(dx)>55)slideCal(dx<0?1:-1);else{const g=$('#calg');if(g){g.style.transition='transform .2s,opacity .2s';g.style.transform='';g.style.opacity=''}}}};
+      $('#t2').onwheel=e=>{if(!e.target.closest('#calb'))return;if(Math.abs(e.deltaX)>Math.abs(e.deltaY)&&Math.abs(e.deltaX)>18){e.preventDefault();const now=Date.now();if(now-wt>380){wt=now;slideCal(e.deltaX>0?1:-1)}}};
       $('#t2').onclick=e=>{const now=Date.now(),li=e.target.closest('[data-ev]');if(li){const id=+li.dataset.ev;CA.hl=CA.hl===id?null:id;cal();return}
       const b=e.target.closest('.bar');if(b){const id=+b.dataset.e,k='b'+id,dbl=CA.tk===k&&now-CA.tp<350;CA.tp=now;CA.tk=k;if(dbl){$('#evl').scrollIntoView({behavior:'smooth',block:'nearest'});return}CA.sel=null;CA.hl=CA.hl===id?null:id;cal();return}
       const n=e.target.closest('.nums');if(n){const r=n.getBoundingClientRect(),c=Math.min(6,Math.max(0,Math.floor((e.clientX-r.left)/r.width*7))),d=pd(n.closest('.wk').dataset.d);
       d.setDate(d.getDate()+c);const s=iso(d),k='d'+s,dbl=CA.tk===k&&now-CA.tp<350;CA.tp=now;CA.tk=k;CA.sel=s;CA.hl=null;cal(dbl);return}
-      if(!e.target.closest('button,#evl')&&(CA.hl!=null||CA.sel!=null)){CA.hl=null;CA.sel=null;cal()}};
+      if(!e.target.closest('button,select,#evl')&&(CA.hl!=null||CA.sel!=null)){CA.hl=null;CA.sel=null;cal()}};
       
       /* 回想 */
       const RC={f:'all',q:''},done=new Set(U.rc);
