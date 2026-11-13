@@ -18,31 +18,22 @@
         margin:0;min-height:100%;color:var(--ink);font:15px/1.55 -apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;background:radial-gradient(700px 420px at 0% 0%,var(--g1),transparent 70%),radial-gradient(700px 480px at 100% 100%,var(--g2),transparent 70%),var(--bg);background-attachment:fixed}
         body::before{
         content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--hd);z-index:10}
-      .serif,h2,.big,.ttl span{
+      h2,.big,.ttl span,.vd{
         font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif}
       header{
         position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--hd);border-bottom:1px solid var(--line)}
       .ttl{
-        display:flex;align-items:center;gap:10px;padding:10px 18px 0;background:repeating-radial-gradient(circle at 50% 100%,transparent 0 5px,var(--line) 5px 6px) 0 0/30px 15px,repeating-radial-gradient(circle at 50% 100%,transparent 0 5px,var(--line) 5px 6px) 15px 7px/30px 15px;-webkit-mask-image:linear-gradient(90deg,#000 0,transparent 85%);mask-image:linear-gradient(90deg,#000 0,transparent 85%)}
+        display:flex;align-items:baseline;gap:10px;padding:13px 18px 10px;background:repeating-radial-gradient(circle at 50% 100%,transparent 0 5px,var(--line) 5px 6px) 0 0/30px 15px,repeating-radial-gradient(circle at 50% 100%,transparent 0 5px,var(--line) 5px 6px) 15px 7px/30px 15px;-webkit-mask-image:linear-gradient(90deg,#000 0,transparent 85%);mask-image:linear-gradient(90deg,#000 0,transparent 85%)}
         .ttl::before{
-          content:"";width:9px;height:9px;transform:rotate(45deg);background:linear-gradient(135deg,var(--ac2),var(--navy));box-shadow:0 0 10px var(--ac2)}
+          content:"";width:9px;height:9px;align-self:center;transform:rotate(45deg);background:linear-gradient(135deg,var(--ac2),var(--navy));box-shadow:0 0 10px var(--ac2)}
         .ttl span{
-        font-size:21px;letter-spacing:.35em;color:var(--ink);padding-bottom:4px}.ttl small{font-size:10px;letter-spacing:.4em;color:var(--ac2)}
+        font-size:21px;letter-spacing:.35em;color:var(--ink)}.ttl small{font-size:10px;letter-spacing:.4em;color:var(--ac2)}
       #pv_ver{position:absolute;right:18px;top:70%;transform:translateY(-50%);font-size:8px;letter-spacing:.08em;color:var(--sub);opacity:.5}
-      nav{
-        display:flex;padding:0 6px}
-        nav button{
-          flex:1;position:relative;padding:10px 2px 12px;border:0;background:none;color:var(--sub);font:inherit;font-weight:600;letter-spacing:.18em;font-size:14px}
-          nav button.on{
-            color:var(--ink)}
-            nav button.on::after{
-              content:"";position:absolute;left:24%;right:24%;bottom:4px;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--ac2),var(--navy));box-shadow:0 0 8px var(--ac2)}
-      main{
-        padding:14px 12px 28px;max-width:640px;margin:0 auto}
-        section{
-          display:none}
-          section.on{
-            display:block}
+      main{padding:14px 12px 112px;max-width:640px;margin:0 auto}
+      section{
+        display:none}
+        section.on{
+          display:block}
       .card{
         background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:var(--sh);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
       h2{
@@ -76,8 +67,8 @@
         .it b{
           display:block;font-size:16px;letter-spacing:.03em}
       .ic{
-        flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:#fff;font:700 18px "Hiragino Mincho ProN","Yu Mincho",serif;background:linear-gradient(135deg,hsl(var(--h,220) 45% 58%),hsl(calc(var(--h,220) + 40) 50% 36%));box-shadow:0 0 0 2px var(--hd),0 0 0 3px var(--gold)}
-        .bd{
+        flex:none;width:46px;height:46px;border-radius:16px 6px 16px 6px;display:grid;place-items:center;color:#fff;font:700 19px "Hiragino Mincho ProN","Yu Mincho",serif;background:linear-gradient(135deg,hsl(var(--h,220) 45% 58%),hsl(calc(var(--h,220) + 40) 50% 36%));box-shadow:0 0 0 2px var(--hd),0 0 0 3px var(--gold)}
+      .bd{
           display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;max-width:38%}
       .lv{
         font:600 12px/1 -apple-system,"Hiragino Sans",sans-serif;color:var(--navy);margin-left:8px;letter-spacing:.04em;white-space:nowrap}.lv i{font-style:normal;color:var(--gold);margin-left:7px}
@@ -132,28 +123,13 @@
         height:8px;border-radius:4px;background:var(--chip);overflow:hidden}
         .bar2 i{
           display:block;height:100%;background:linear-gradient(90deg,var(--navy),var(--ac2));box-shadow:0 0 10px var(--ac2)}
-      #sheet{
-        position:fixed;inset:0;z-index:20;background:rgba(5,8,20,.45);display:none;align-items:flex-end;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+      #sheet{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
         #sheet.on{display:flex}
-        #sheet>div{
-          background:var(--hd);width:100%;max-height:86%;overflow:auto;border-radius:22px 22px 0 0;border-top:1px solid var(--line);padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px));max-width:640px;margin:0 auto}
-      #sheet.pop{align-items:center;padding:16px}
-      #sheet.pop>div{width:min(92%,400px);max-height:80%;border-radius:22px;border:1px solid var(--line);padding:18px;background:rgba(251,248,241,.82);-webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);box-shadow:var(--sh),0 18px 40px rgba(0,0,0,.25)}
-      @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) #sheet.pop>div{background:rgba(16,24,48,.78)}}
-      :root[data-theme="dark"] #sheet.pop>div{background:rgba(16,24,48,.78)}
-      .yp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
-      .yp-grid .chip{text-align:center;padding:9px 4px;border-radius:14px}
+      #sb{background:var(--hd);color:var(--ink);width:min(92vw,420px);max-height:82vh;overflow-y:auto;border-radius:22px;padding:18px;box-shadow:0 8px 28px rgba(0,0,0,.22);border:1px solid var(--line)}
+      .xbtn{background:transparent!important;border:none!important;width:28px!important;min-width:28px!important;max-width:28px!important;height:28px!important;min-height:28px!important;aspect-ratio:1/1;padding:0!important;font-size:16px;line-height:1;color:#666;cursor:pointer;border-radius:6px;display:inline-flex!important;align-items:center;justify-content:center;flex:0 0 28px!important}
+      .xbtn:hover{background:#f0f0f0;color:#111}
       table{
         width:100%;border-collapse:collapse;font-size:14px}td,th{padding:5px 6px;text-align:right;border-bottom:1px solid var(--line)}td:first-child,th:first-child{text-align:left}th{color:var(--sub);font-weight:600;letter-spacing:.1em;font-size:12px}
-      .ttl{
-        align-items:baseline;padding:13px 18px 10px}
-        .ttl::before{
-          align-self:center}
-        .ttl span{
-          padding-bottom:0}
-      main{padding:14px 12px 112px}
-      .ic{
-        border-radius:16px 6px 16px 6px;width:46px;height:46px;font-size:19px}
       #dock{
         position:fixed;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom,0px));width:min(94%,460px);display:flex;gap:2px;padding:6px;border-radius:26px;background:var(--card);border:1px solid var(--line);box-shadow:var(--sh),0 10px 30px rgba(0,0,0,.14);-webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4);z-index:15}
         #dock button{
@@ -281,7 +257,7 @@
       if(!a.length){const r=[];for(let i=1;i<=366&&r.length<3;i++){const d=new Date(n);d.setDate(d.getDate()+i);const k=iso(d);annOn(k).forEach(x=>r.length<3&&r.push({d:k,t:x.t}))}nx=r.map(x=>'<div class="sub">'+md(x.d)+'　'+esc(x.t)+'（あと'+days(T,x.d)+'日）</div>').join('')}
       const on=EV.filter(e=>e.l<5&&e.a<=T&&(e.b?T<=e.b:e.a===T)).sort((x,y)=>x.l-y.l||(x.b||'9').localeCompare(y.b||'9'));
       const soon=EV.filter(e=>e.l<5&&e.a>T&&days(T,e.a)<=14).sort((x,y)=>x.a.localeCompare(y.a));
-      $('#t0').innerHTML='<div class="card hero"><div class="vd serif">'+kn(n.getMonth()+1)+'月<br>'+kn(n.getDate())+'日</div><div class="hm"><div class="sub">'+n.getFullYear()+'年　'+WD[n.getDay()]+'曜日</div><div class="hst"><div><b>'+on.length+'</b><span>開催中</span></div><div><b>'+soon.length+'</b><span>まもなく</span></div><div><b>'+a.length+'</b><span>記念日</span></div></div></div></div>'
+      $('#t0').innerHTML='<div class="card hero"><div class="vd">'+kn(n.getMonth()+1)+'月<br>'+kn(n.getDate())+'日</div><div class="hm"><div class="sub">'+n.getFullYear()+'年　'+WD[n.getDay()]+'曜日</div><div class="hst"><div><b>'+on.length+'</b><span>開催中</span></div><div><b>'+soon.length+'</b><span>まもなく</span></div><div><b>'+a.length+'</b><span>記念日</span></div></div></div></div>'
       +'<h2>顕現記念日</h2><div class="card">'+(a.length?a.map(x=>'<div class="big" style="font-size:17px">🎉 '+esc(x.t)+'</div>').join(''):'<div class="sub">今日が記念日の刀剣男士はいません</div>'+nx)+'</div>'
       +'<h2>開催中</h2><div class="card">'+(on.map(e=>evH(e).replace('</div>',(e.b?' <small>あと'+days(T,e.b)+'日</small>':'')+'</div>')).join('')||'<div class="sub">なし</div>')+'</div>'
       +'<h2>14日以内に開始</h2><div class="card">'+(soon.map(e=>evH(e).replace('<small style','<small>'+md(e.a)+'〜</small> <small style')).join('')||'<div class="sub">なし</div>')+'</div>'}
@@ -307,33 +283,33 @@
         return '<div class="it" data-i="'+i+'"><div class="ic" style="--h:'+hue(s.s||s.t)+'">'+esc(TK[s.t]||(s.t||'')[0]||'')+'</div><div class="m"><b>'+esc(s.n)+lvT(s)+'</b><span class="sub">No.'+s.no+' ・ '+(s.own?(s.got?fmt(s.got):'所持'):'未所持')+' ・ '+esc(s.t)+(s.r?' ★'+s.r:'')+'</span></div><div class="bd">'+bd.join('')+'</div></div>'}).join('')||'<div class="sub" style="padding:14px">該当なし</div>'}
       const forms=s=>[{k:'初',lv:1,st:s.st}].concat(s.fm||[],s.kxi?[{k:'極',st:s.kx.st}]:[]);
       function sheet(i,v){
-        const s=SW[i],fs=forms(s),cur=v||(s.sh?'極':(s.cf||'初')),f=fs.find(x=>x.k==cur)||fs[0],isK=f.k=='極',g=s.g;
+        const s=SW[i],fs=forms(s),cur=v||(s.sh?'極':(s.cf||'初')),f=fs.find(x=>x.k==cur)||fs[0],isK=f.k=='極',g=s.g,lv=g&&g[1]!=null?g[1]:0;
         const kv=(a,b)=>b==null||b===''?'':'<div class="kv"><span>'+a+'</span><span>'+esc(b)+'</span></div>',D=x=>x?fmt(x):'';
         const gt=s.own?(s.got?fmt(s.got):'所持'):'未所持';
-        const dates=s.kxi&&(s.sh||isK)?kv('初の実装日',D(s.d))+kv('極の実装日',D(s.kx.d))+kv('初の顕現日',gt)+kv('修行完了日',s.sh?(s.kg?fmt(s.kg):'修行済'):'未修行'):kv('実装日',D(s.d))+kv('顕現日',gt);
-        const gr=g?kv('現在のLv',(g[1]==null?'-':'Lv'+g[1])+(s.cf&&!s.sh?'（'+s.cf+'）':''))+kv('累積経験値',g[2]==null?'':g[2].toLocaleString())+kv('乱舞Lv',g[0])+(!s.sh&&s.kxi&&g[5]!=null?kv('極相当Lv',g[5]):'')+(!s.sh&&s.kxi&&g[4]!=null?kv('修行目安Lv','Lv'+g[4]):''):'';
-        const tl=s.tl?kv('特になるLv',s.tl[0]?'Lv'+s.tl[0]:'')+kv('修行に出せるLv',s.tl[1]?'Lv'+s.tl[1]:''):'';
-        $('#sb').innerHTML='<div class="row" style="align-items:center"><div class="big">'+esc(s.n)+(isK?'・極':(f.k!='初'?'　'+f.k:''))+'</div><button class="btn" id="cl">閉じる</button></div>'
-        +'<div class="sub">No.'+s.no+' ・ '+esc([s.t,s.s].filter(Boolean).join('・'))+(s.r?' ・ ★'+s.r:'')+(s.sl?' ・ 刀装'+s.sl:'')+'</div>'
+        const dates=s.kxi&&(s.sh||isK)?kv('初実装日',D(s.d))+kv('極実装日',D(s.kx.d))+kv('顕現日',gt)+kv('修行完了日',s.sh?(s.kg?fmt(s.kg):'修行済'):'未修行'):kv('実装日',D(s.d))+kv('顕現日',gt);
+        const gr=g?kv('累積経験値',g[2]==null?'':g[2].toLocaleString())+(!s.sh&&s.kxi&&g[5]!=null?kv('極相当Lv',String(g[5]).startsWith('極')?g[5]:'極Lv'+g[5]):'')+(!s.sh&&s.kxi&&g[4]!=null?kv('修行目安Lv','極Lv'+g[4]):''):'';
+        const tl=s.tl&&!s.sh?kv('特ランクアップLv',s.tl[0]&&lv<s.tl[0]?'Lv'+s.tl[0]:'')+kv('修行可能Lv',s.tl[1]&&lv<s.tl[1]?'Lv'+s.tl[1]:''):'';
+        const stB=s.wait?' <span class="b">修行待ち</span>':(s.nokx?' <span class="b">極未実装</span>':'');
+                $('#sb').innerHTML='<div class="row" style="align-items:center"><div class="big">'+esc(s.n)+lvT(s)+'</div><button class="xbtn" id="cl" aria-label="閉じる">×</button></div>'
+        +'<div class="sub">No.'+s.no+' ・ '+esc([s.t,s.s].filter(Boolean).join('・'))+(s.r?' ・ ★'+s.r:'')+(s.sl?' ・ 刀装'+s.sl:'')+stB+'</div>'
         +(fs.length>1?'<div class="seg"><span class="sub">ステータスを見る</span>'+fs.map(x=>'<button class="chip'+(x.k==f.k?' on':'')+'" data-k="'+x.k+'">'+x.k+'</button>').join('')+'</div>':'')
-        +'<div class="sub" style="margin-top:6px">'+f.k+'のステータス'+(f.lv>1?'（Lv'+f.lv+'〜）':'')+'</div>'
-        +dates+gr+(!s.sh&&s.kxi&&g&&g[5]!=null?'<div class="sub" style="text-align:right">極相当Lv：今の経験値を極の成長表で見たときのLv</div>':'')+tl
-        +'<table style="margin:4px 0 10px"><tr><th></th><th>初期</th><th>現在</th><th>最大</th><th>乱舞9</th><th>乱舞10</th></tr>'+STN.map((n,j)=>{const curSt=(g&&g[6]&&isK===!!s.sh)?g[6][j]:null;return'<tr><td>'+n+'</td><td>'+(f.st[0][j]==null?'-':esc(f.st[0][j]))+'</td><td>'+(curSt==null?'-':esc(curSt))+'</td>'+[1,2,3].map(x=>'<td>'+(f.st[x]&&f.st[x][j]!=null?esc(f.st[x][j]):'-')+'</td>').join('')+'</tr>'}).join('')+'</table>'
+        +'<div class="sub" style="margin:10px 0 6px">'+f.k+'のステータス'+(f.lv>1?'（Lv'+f.lv+'〜）':'')+'</div>'
+        +dates+gr+tl
+        +'<table style="margin:14px 0 16px"><tr><th></th><th>初期</th><th>現在</th><th>最大</th><th>乱舞9</th><th>乱舞10</th></tr>'+STN.map((n,j)=>{const curSt=(g&&g[6]&&isK===!!s.sh)?g[6][j]:null;return'<tr><td>'+n+'</td><td>'+(f.st[0][j]==null?'-':esc(f.st[0][j]))+'</td><td>'+(curSt==null?'-':esc(curSt))+'</td>'+[1,2,3].map(x=>'<td>'+(f.st[x]&&f.st[x][j]!=null?esc(f.st[x][j]):'-')+'</td>').join('')+'</tr>'}).join('')+'</table>'
         +Object.entries(s.get||{}).map(e=>kv(e[0],e[1])).join('');
-        $('#sheet').classList.add('on');$('#cl').onclick=()=>$('#sheet').classList.remove('on');document.querySelectorAll('#sb [data-k]').forEach(b=>b.onclick=()=>sheet(i,b.dataset.k))}
-      $('#sheet').onclick=e=>{if(e.target.id=='sheet')$('#sheet').classList.remove('on','pop')};
-      
+        $('#sheet').classList.add('on');document.querySelectorAll('#sb [data-k]').forEach(b=>b.onclick=()=>sheet(i,b.dataset.k))}
+
       /* カレンダー */
       const evC=e=>'<div class="ev'+(e.id==CA.hl?' hl':'')+'" data-ev="'+e.id+'" style="border-color:'+LC[e.l]+'"><small style="color:'+LC[e.l]+'">'+LN[e.l]+'</small> '+esc(etl(e))+'<div class="sub">'+fmt(e.a)+(e.b&&e.b>e.a?' 〜 '+fmt(e.b):'')+'</div></div>';
       const nw=new Date(),CA={y:nw.getFullYear(),m:nw.getMonth(),sel:T,hl:null,tp:0,tk:''},MAXL=4,PR=[0,1,2,4,3,5,6];
       function ymPick(){
         const ys=Array.from({length:nw.getFullYear()-2014+3},(_,i)=>2014+i).map(y=>'<button class="chip'+(y==CA.y?' on':'')+'" data-py="'+y+'">'+y+'</button>').join('');
         const ms=Array.from({length:12},(_,i)=>'<button class="chip'+(i==CA.m?' on':'')+'" data-pm="'+i+'">'+(i+1)+'月</button>').join('');
-        $('#sb').innerHTML='<div class="row" style="align-items:center"><div class="big">年月を選択</div><button class="btn" id="cl">閉じる</button></div>'
+        $('#sb').innerHTML='<div class="row" style="align-items:center"><div class="big">年月を選択</div><button class="xbtn" id="closeSet" data-close aria-label="閉じる">×</button></div>'
         +'<h2>年</h2><div class="yp-grid">'+ys+'</div><h2>月</h2><div class="yp-grid">'+ms+'</div>';
-        $('#sheet').classList.add('on','pop');$('#cl').onclick=()=>$('#sheet').classList.remove('on','pop');
+        $('#sheet').classList.add('on');
         document.querySelectorAll('#sb [data-py]').forEach(b=>b.onclick=()=>{CA.y=+b.dataset.py;ymPick();cal()});
-        document.querySelectorAll('#sb [data-pm]').forEach(b=>b.onclick=()=>{CA.m=+b.dataset.pm;$('#sheet').classList.remove('on','pop');cal()});
+        document.querySelectorAll('#sb [data-pm]').forEach(b=>b.onclick=()=>{CA.m=+b.dataset.pm;$('#sheet').classList.remove('on');cal()});
       }
       function slideCal(dir){
         const g=$('#calg');
@@ -359,8 +335,6 @@
         wk+='<div class="wk" data-d="'+ds[0]+'"><div class="nums">'+nums+'</div>'+(ln.length?'<div class="bars" style="grid-template-rows:repeat('+ln.length+',17px)">'+bars+'</div>':'')+'<div class="dots">'+dots+'</div>'+(hid?'<div class="more">ほか'+hid+'件</div>':'')+'</div>'}
       const he=CA.hl!=null?EV[CA.hl]:null,ev=CA.sel?(DM[CA.sel]||[]).concat(annOn(CA.sel)).sort((x,y)=>x.l-y.l):[];
       const det=CA.sel?'<h2>'+md(CA.sel)+'（'+WD[pd(CA.sel).getDay()]+'）</h2><div class="card">'+(ev.map(evC).join('')||'<div class="sub">予定なし</div>')+'</div>':(he?'<h2>選択中の予定</h2><div class="card">'+evC(he)+'</div>':'');
-      const ys=Array.from({length:nw.getFullYear()-2014+3},(_,i)=>2014+i).map(y=>'<option value="'+y+'"'+(y==CA.y?' selected':'')+'>'+y+'年</option>').join('');
-      const ms=Array.from({length:12},(_,i)=>'<option value="'+i+'"'+(i==CA.m?' selected':'')+'>'+(i+1)+'月</option>').join('');
       $('#t2').innerHTML='<div class="row" style="align-items:center"><button class="btn" id="pv">◀</button><button class="btn ym" id="ym">'+CA.y+'年 '+(CA.m+1)+'月<small>▾</small></button><button class="btn" id="nx">▶</button><button class="btn" id="td">今日</button></div><div class="card'+(CA.hl!=null?' dim':'')+'" id="calb" style="padding:10px 6px"><div id="calg"><div class="wd">'+[...'日月火水木金土'].map(x=>'<div>'+x+'</div>').join('')+'</div>'+wk+'</div></div><div class="lg">'+LN.map((x,i)=>'<span><i style="background:'+LC[i]+'"></i>'+x+'</span>').join('')+'</div><div id="evl">'+det+'</div>';
       $('#pv').onclick=()=>slideCal(-1);$('#nx').onclick=()=>slideCal(1);
       $('#ym').onclick=ymPick;
@@ -389,6 +363,10 @@
       $('#t4').innerHTML='<div class="card"><div class="sub">シミュレーターやグラフを、ここに足していきます。</div></div>'+TOOLS.map(x=>'<div class="card tool'+(x.render?'':' soon')+'" data-tool="'+x.id+'"><div class="ti"><svg viewBox="0 0 24 24">'+x.ic+'</svg></div><div><b>'+x.n+'</b><span class="sub">'+x.d+'</span></div>'+(x.render?'':'<span class="b" style="margin-left:auto">準備中</span>')+'</div>').join('')}
       $('#t4').onclick=e=>{const c=e.target.closest('[data-tool]');if(c){const t=TOOLS.find(x=>x.id==c.dataset.tool);if(t&&t.render){TL.cur=t.id;tools()}}};
       today();dexInit();cal();recInit();tools();show(0);
+
+      // ポップアップ外・×ボタンで閉じる
+      $('#sheet').onclick=e=>{if(e.target.id==='sheet'||e.target.closest('.xbtn'))$('#sheet').classList.remove('on')};
+
     </script>
   </body>
 
