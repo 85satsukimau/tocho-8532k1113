@@ -28,6 +28,7 @@
           content:"";width:9px;height:9px;transform:rotate(45deg);background:linear-gradient(135deg,var(--ac2),var(--navy));box-shadow:0 0 10px var(--ac2)}
         .ttl span{
         font-size:21px;letter-spacing:.35em;color:var(--ink);padding-bottom:4px}.ttl small{font-size:10px;letter-spacing:.4em;color:var(--ac2)}
+      #pv_ver{position:absolute;right:18px;top:70%;transform:translateY(-50%);font-size:8px;letter-spacing:.08em;color:var(--sub);opacity:.5}
       nav{
         display:flex;padding:0 6px}
         nav button{
@@ -199,6 +200,7 @@
         <span id="pt"></span>
         <small id="ps"></small>
       </div>
+      <small id="pv_ver">1.1.2</small>
     </header>
     
     <main>
@@ -336,14 +338,14 @@
       function slideCal(dir){
         const g=$('#calg');
         if(!g){CA.m+=dir;if(CA.m<0){CA.m=11;CA.y--}if(CA.m>11){CA.m=0;CA.y++}cal();return}
-        g.style.transition='transform .18s ease-out,opacity .18s ease-out';
-        g.style.transform='translateX('+(dir>0?-45:45)+'%)';g.style.opacity='0';
+        g.style.transition='transform .11s ease-out,opacity .11s ease-out';
+        g.style.transform='translateX('+(dir>0?-35:35)+'%)';g.style.opacity='0';
         setTimeout(()=>{
           CA.m+=dir;if(CA.m<0){CA.m=11;CA.y--}if(CA.m>11){CA.m=0;CA.y++}cal();
           const ng=$('#calg');
-          if(ng){ng.style.transform='translateX('+(dir>0?45:-45)+'%)';ng.style.opacity='0';ng.offsetWidth;
-          ng.style.transition='transform .22s cubic-bezier(.2,.8,.2,1),opacity .22s';ng.style.transform='';ng.style.opacity=''}
-        },160);
+          if(ng){ng.style.transform='translateX('+(dir>0?35:-35)+'%)';ng.style.opacity='0';ng.offsetWidth;
+          ng.style.transition='transform .14s cubic-bezier(.2,.8,.2,1),opacity .14s';ng.style.transform='';ng.style.opacity=''}
+        },100);
       }
       function cal(go){const f=new Date(CA.y,CA.m,1),ws=new Date(f);ws.setDate(1-f.getDay());const lt=new Date(CA.y,CA.m+1,0),we=new Date(lt);we.setDate(lt.getDate()+(6-lt.getDay()));
       const nwk=Math.round((we-ws)/864e5+1)/7;let wk='';
@@ -366,7 +368,7 @@
       let sx=0,sy=0,dr=0,wt=0;$('#t2').ontouchstart=e=>{if(e.target.closest('#calb')&&e.touches.length==1){sx=e.touches[0].clientX;sy=e.touches[0].clientY;dr=0;const g=$('#calg');if(g)g.style.transition='none'}else sx=0};
       $('#t2').ontouchmove=e=>{if(!sx)return;const dx=e.touches[0].clientX-sx,dy=e.touches[0].clientY-sy;if(!dr&&Math.abs(dx)>10&&Math.abs(dx)>Math.abs(dy)*1.2)dr=1;if(dr){e.preventDefault();const g=$('#calg');if(g){g.style.transform='translateX('+dx+'px)';g.style.opacity=Math.max(.35,1-Math.abs(dx)/280)}}};
       $('#t2').ontouchend=e=>{if(!sx)return;const dx=e.changedTouches[0].clientX-sx;sx=0;if(dr){dr=0;if(Math.abs(dx)>55)slideCal(dx<0?1:-1);else{const g=$('#calg');if(g){g.style.transition='transform .2s,opacity .2s';g.style.transform='';g.style.opacity=''}}}};
-      $('#t2').onwheel=e=>{if(!e.target.closest('#calb'))return;if(Math.abs(e.deltaX)>Math.abs(e.deltaY)&&Math.abs(e.deltaX)>18){e.preventDefault();const now=Date.now();if(now-wt>380){wt=now;slideCal(e.deltaX>0?1:-1)}}};
+      $('#t2').onwheel=e=>{if(!e.target.closest('#calb'))return;if(Math.abs(e.deltaX)>Math.abs(e.deltaY)&&Math.abs(e.deltaX)>18){e.preventDefault();const now=Date.now();if(now-wt>260){wt=now;slideCal(e.deltaX>0?1:-1)}}};
       $('#t2').onclick=e=>{const now=Date.now(),li=e.target.closest('[data-ev]');if(li){const id=+li.dataset.ev;CA.hl=CA.hl===id?null:id;cal();return}
       const b=e.target.closest('.bar');if(b){const id=+b.dataset.e,k='b'+id,dbl=CA.tk===k&&now-CA.tp<350;CA.tp=now;CA.tk=k;if(dbl){$('#evl').scrollIntoView({behavior:'smooth',block:'nearest'});return}CA.sel=null;CA.hl=CA.hl===id?null:id;cal();return}
       const n=e.target.closest('.nums');if(n){const r=n.getBoundingClientRect(),c=Math.min(6,Math.max(0,Math.floor((e.clientX-r.left)/r.width*7))),d=pd(n.closest('.wk').dataset.d);
