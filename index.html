@@ -148,15 +148,17 @@
         #dock button.on{
           color:var(--on);background:linear-gradient(135deg,var(--navy),var(--ac2));box-shadow:0 3px 12px rgba(31,181,174,.35)}
       .hero{
-        display:flex;gap:16px;align-items:center;padding:16px 18px}
+        display:flex;justify-content:space-between;align-items:center;padding:16px 20px}
       .hdbox{
-        min-width:128px;padding-right:14px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:3px}
+        display:inline-flex;flex-direction:column;align-items:flex-start;gap:3px}
       .hy{
-        font-size:13px;letter-spacing:.22em;color:var(--ink);opacity:.78;font-weight:600}
+        font-size:12px;letter-spacing:.2em;color:var(--ink);opacity:.75;font-weight:600}
       .hmd{
-        font-size:21px;font-weight:700;letter-spacing:.08em;line-height:1.3;color:var(--ink);white-space:nowrap}
+        font-size:24px;font-weight:700;letter-spacing:.1em;line-height:1.3;color:var(--ink)}
       .hwd{
-        margin-top:4px;padding-top:5px;border-top:1px solid var(--gold);font-size:13px;font-weight:700;letter-spacing:.2em;color:var(--ink)}
+        align-self:stretch;margin-top:4px;padding-top:5px;border-top:1px solid var(--gold);font-size:13px;font-weight:700;letter-spacing:.2em;color:var(--ink)}
+      .hsekki{
+        writing-mode:vertical-rl;font:700 16px/1.2 "Hiragino Mincho ProN","Yu Mincho",serif;letter-spacing:.28em;color:var(--ink);opacity:.82;padding:4px 8px;border-left:1px solid var(--line)}
       .hm{
         flex:1}
       .hst{
@@ -193,7 +195,7 @@
         <span id="pt"></span>
         <small id="ps"></small>
       </div>
-      <small id="pv_ver">v1.1.4</small>
+      <small id="pv_ver">v1.1.5</small>
     </header>
     
     <main>
@@ -270,11 +272,18 @@
       $('#dock').onclick=e=>{const b=e.target.closest('button');if(b)show(+b.dataset.i)};
       
       /* 縁側（ホーム） */
+      function sekki(d){
+      const m=d.getMonth()+1,day=d.getDate(),v=m*100+day;
+      const s=[[105,'小寒'],[120,'大寒'],[204,'立春'],[219,'雨水'],[305,'啓蟄'],[320,'春分'],[404,'清明'],[420,'穀雨'],[505,'立夏'],[521,'小満'],[605,'芒種'],[621,'夏至'],[707,'小暑'],[722,'大暑'],[807,'立秋'],[823,'処暑'],[907,'白露'],[923,'秋分'],[1008,'寒露'],[1023,'霜降'],[1107,'立冬'],[1122,'小雪'],[1207,'大雪'],[1221,'冬至']];
+      let res='冬至';
+      for(const[k,name]of s){if(v>=k)res=name;}
+      return res;
+    }
       function today(){const n=new Date(),a=annOn(T);let nx='';
       if(!a.length){const r=[];for(let i=1;i<=366&&r.length<3;i++){const d=new Date(n);d.setDate(d.getDate()+i);const k=iso(d);annOn(k).forEach(x=>r.length<3&&r.push({d:k,t:x.t}))}nx=r.map(x=>'<div class="sub">'+md(x.d)+'　'+esc(x.t)+'（あと'+days(T,x.d)+'日）</div>').join('')}
       const on=EV.filter(e=>e.l<5&&e.a<=T&&(e.b?T<=e.b:e.a===T)).sort((x,y)=>x.l-y.l||(x.b||'9').localeCompare(y.b||'9'));
       const soon=EV.filter(e=>e.l<5&&e.a>T&&days(T,e.a)<=14).sort((x,y)=>x.a.localeCompare(y.a));
-      $('#t0').innerHTML='<div class="card hero"><div class="hdbox"><div class="hy">'+n.getFullYear()+'年</div><div class="hmd">'+kn(n.getMonth()+1)+'月'+kn(n.getDate())+'日</div><div class="hwd">'+WD[n.getDay()]+'曜日</div></div><div class="hm"><div class="hst"><div><b>'+on.length+'</b><span>開催中</span></div><div><b>'+soon.length+'</b><span>まもなく</span></div><div><b>'+a.length+'</b><span>記念日</span></div></div></div></div>'
+      $('#t0').innerHTML='<div class="card hero"><div class="hdbox"><div class="hy">'+n.getFullYear()+'年</div><div class="hmd">'+kn(n.getMonth()+1)+'月'+kn(n.getDate())+'日</div><div class="hwd">'+WD[n.getDay()]+'曜日</div></div><div class="hsekki">'+sekki(n)+'</div></div>'
       +'<h2>顕現記念日</h2><div class="card">'+(a.length?a.map(x=>'<div class="big" style="font-size:17px">🎉 '+esc(x.t)+'</div>').join(''):'<div class="sub">今日が記念日の刀剣男士はいません</div>'+nx)+'</div>'
       +'<h2>開催中</h2><div class="card">'+(on.map(e=>evH(e).replace('</div>',(e.b?' <small>あと'+days(T,e.b)+'日</small>':'')+'</div>')).join('')||'<div class="sub">なし</div>')+'</div>'
       +'<h2>14日以内に開始</h2><div class="card">'+(soon.map(e=>evH(e).replace('<small style','<small>'+md(e.a)+'〜</small> <small style')).join('')||'<div class="sub">なし</div>')+'</div>'}
