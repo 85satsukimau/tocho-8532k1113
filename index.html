@@ -45,35 +45,35 @@
       .big{
         font-size:20px;font-weight:700;letter-spacing:.06em}
       .sub{
-        color:var(--sub);font-size:13px}
+        color:var(--sub);font-size:10.5px;line-height:1.35}
       .row{
         display:flex;gap:8px;margin-bottom:8px}
         .row>*{flex:1;min-width:0}
       input,select,.btn{
-        font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px;width:100%;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+        font:inherit;font-size:13px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:7px 10px;width:100%;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
         .btn{
           width:auto;flex:none;cursor:pointer}
       .chips{
-        display:flex;gap:7px;overflow-x:auto;margin-bottom:10px;padding:2px 1px 4px}
+        display:flex;gap:6px;overflow-x:auto;margin-bottom:8px;padding:2px 1px 4px}
         .chip{
-          flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 14px;font:inherit;font-size:14px;letter-spacing:.04em}
+          flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:4.5px 11px;font:inherit;font-size:12.5px;letter-spacing:.03em}
         .chip.on{
         background:linear-gradient(135deg,var(--navy),var(--ac2));color:var(--on);border-color:transparent;box-shadow:0 3px 12px rgba(31,181,174,.35)}
       .it{
-        display:flex;gap:13px;align-items:center;padding:11px 14px;border-bottom:1px solid var(--line);cursor:pointer}
+        display:flex;gap:10px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line);cursor:pointer}
         .it:last-child{border:0}
         .it .m{
         flex:1;min-width:0}
         .it b{
-          display:block;font-size:16px;letter-spacing:.03em}
+          display:block;font-size:15.5px;font-weight:500;line-height:1.35;letter-spacing:.02em}
       .ic{
-        flex:none;width:46px;height:46px;border-radius:16px 6px 16px 6px;display:grid;place-items:center;color:#fff;font:700 19px "Hiragino Mincho ProN","Yu Mincho",serif;background:linear-gradient(135deg,hsl(var(--h,220) 45% 58%),hsl(calc(var(--h,220) + 40) 50% 36%));box-shadow:0 0 0 2px var(--hd),0 0 0 3px var(--gold)}
+        flex:none;width:36px;height:36px;border-radius:12px 5px 12px 5px;display:grid;place-items:center;color:#fff;font:700 15px "Hiragino Mincho ProN","Yu Mincho",serif;background:linear-gradient(135deg,hsl(var(--h,220) 45% 58%),hsl(calc(var(--h,220) + 40) 50% 36%));box-shadow:0 0 0 1.5px var(--hd),0 0 0 2.5px var(--gold)}
       .bd{
-          display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;max-width:38%}
+          display:flex;gap:3px;flex-wrap:wrap;justify-content:flex-end;max-width:38%}
       .lv{
-        font:600 12px/1 -apple-system,"Hiragino Sans",sans-serif;color:var(--navy);margin-left:8px;letter-spacing:.04em;white-space:nowrap}.lv i{font-style:normal;color:var(--gold);margin-left:7px}
+        font:600 11px/1 -apple-system,"Hiragino Sans",sans-serif;color:var(--navy);margin-left:6px;letter-spacing:.03em;white-space:nowrap}.lv i{font-style:normal;color:var(--gold);margin-left:5px}
       .b{
-        font-size:11px;padding:2px 9px;border-radius:999px;background:var(--chip);color:var(--navy);border:1px solid var(--line);white-space:nowrap}
+        font-size:10px;padding:1.5px 7px;border-radius:999px;background:var(--chip);color:var(--navy);border:1px solid var(--line);white-space:nowrap}
         .b.g{color:var(--ok)}
         .b.o{color:#6d4f0e;background:linear-gradient(135deg,#f6e7b8,#e4c473);border-color:transparent}
       .ev{
@@ -195,7 +195,7 @@
         <span id="pt"></span>
         <small id="ps"></small>
       </div>
-      <small id="pv_ver">v1.1.5</small>
+      <small id="pv_ver">v1.1.6</small>
     </header>
     
     <main>
@@ -258,7 +258,7 @@
       const EV=M.ev.map(a=>({l:a[0],a:a[1],b:a[2],k:a[3],t:a[4]}));
       SW.forEach(s=>{if(s.d)EV.push({l:5,a:s.d,b:null,k:'',t:s.n+' 実装'});if(s.kx&&s.kx.d)EV.push({l:5,a:s.kx.d,b:null,k:'',t:s.n+'・極 実装'})});
       EV.forEach((e,i)=>e.id=i);
-      const DM={};EV.forEach(e=>{const b=e.b&&e.b>=e.a?e.b:e.a,n=Math.min(days(e.a,b),400),d=pd(e.a);for(let i=0;i<=n;i++){const k=iso(d);(DM[k]=DM[k]||[]).push(e);d.setDate(d.getDate()+1)}});
+      const DM={};EV.forEach(e=>{if(!e.a)return;const b=e.b&&e.b>=e.a?e.b:e.a,n=Math.min(days(e.a,b),400),d=pd(e.a);for(let i=0;i<=n;i++){const k=iso(d);(DM[k]=DM[k]||[]).push(e);d.setDate(d.getDate()+1)}});
       const AN={};SW.filter(s=>s.own&&s.got).forEach(s=>{const k=s.got.slice(5);(AN[k]=AN[k]||[]).push(s)});
       const annOn=k=>(AN[k.slice(5)]||[]).filter(s=>+k.slice(0,4)>+s.got.slice(0,4)).map(s=>({l:6,a:k,b:null,k:'',t:s.n+' 顕現'+(+k.slice(0,4)- +s.got.slice(0,4))+'周年'}));
       const etl=e=>e.k?e.k+'：'+e.t:e.t;
@@ -281,12 +281,14 @@
     }
       function today(){const n=new Date(),a=annOn(T);let nx='';
       if(!a.length){const r=[];for(let i=1;i<=366&&r.length<3;i++){const d=new Date(n);d.setDate(d.getDate()+i);const k=iso(d);annOn(k).forEach(x=>r.length<3&&r.push({d:k,t:x.t}))}nx=r.map(x=>'<div class="sub">'+md(x.d)+'　'+esc(x.t)+'（あと'+days(T,x.d)+'日）</div>').join('')}
-      const on=EV.filter(e=>e.l<5&&e.a<=T&&(e.b?T<=e.b:e.a===T)).sort((x,y)=>x.l-y.l||(x.b||'9').localeCompare(y.b||'9'));
-      const soon=EV.filter(e=>e.l<5&&e.a>T&&days(T,e.a)<=14).sort((x,y)=>x.a.localeCompare(y.a));
+      const on=EV.filter(e=>e.l<5&&e.a&&e.a<=T&&(e.b?T<=e.b:e.a===T)).sort((x,y)=>x.l-y.l||(x.b||'9').localeCompare(y.b||'9'));
+      const soon=EV.filter(e=>e.l<5&&e.a&&e.a>T&&days(T,e.a)<=14).sort((x,y)=>x.a.localeCompare(y.a));
+      const tbd=EV.filter(e=>e.l<5&&!e.a);
+      const planH=soon.map(e=>evH(e).replace('<small style','<small>'+md(e.a)+'〜</small> <small style')).concat(tbd.map(e=>evH(e).replace('<small style','<small>時期未定</small> <small style'))).join('');
       $('#t0').innerHTML='<div class="card hero"><div class="hdbox"><div class="hy">'+n.getFullYear()+'年</div><div class="hmd">'+kn(n.getMonth()+1)+'月'+kn(n.getDate())+'日</div><div class="hwd">'+WD[n.getDay()]+'曜日</div></div><div class="hsekki">'+sekki(n)+'</div></div>'
       +'<h2>顕現記念日</h2><div class="card">'+(a.length?a.map(x=>'<div class="big" style="font-size:17px">🎉 '+esc(x.t)+'</div>').join(''):'<div class="sub">今日が記念日の刀剣男士はいません</div>'+nx)+'</div>'
       +'<h2>開催中</h2><div class="card">'+(on.map(e=>evH(e).replace('</div>',(e.b?' <small>あと'+days(T,e.b)+'日</small>':'')+'</div>')).join('')||'<div class="sub">なし</div>')+'</div>'
-      +'<h2>14日以内に開始</h2><div class="card">'+(soon.map(e=>evH(e).replace('<small style','<small>'+md(e.a)+'〜</small> <small style')).join('')||'<div class="sub">なし</div>')+'</div>'}
+      +'<h2>開催予定</h2><div class="card">'+(planH||'<div class="sub">なし</div>')+'</div>'}
       
         /* 刀帳 */
       const DX={q:'',t:'',s:'',c:'all',k:'no',asc:true},hue=s=>{let h=0;for(const c of s||'')h=(h*31+c.charCodeAt(0))%360;return h};
@@ -306,7 +308,7 @@
         const kf=KEY[DX.k];a.sort((x,y)=>{const p=kf(x[0]),r=kf(y[0]);return (typeof p=='string'?p.localeCompare(r,'ja'):p-r)*(DX.asc?1:-1)});
         $('#ls').innerHTML=a.map(([s,i])=>{const bd=[];if(s.sh)bd.push('<span class="b o">極</span>');else if(s.wait)bd.push('<span class="b">修行待ち</span>');else if(s.nokx)bd.push('<span class="b">極未実装</span>');
         s.tg.forEach(t=>bd.push('<span class="b g">'+esc(t)+'</span>'));
-        return '<div class="it" data-i="'+i+'"><div class="ic" style="--h:'+hue(s.s||s.t)+'">'+esc(TK[s.t]||(s.t||'')[0]||'')+'</div><div class="m"><b>'+esc(s.n)+lvT(s)+'</b><span class="sub">No.'+s.no+' ・ '+(s.own?(s.got?fmt(s.got):'所持'):'未所持')+' ・ '+esc(s.t)+(s.r?' ★'+s.r:'')+'</span></div><div class="bd">'+bd.join('')+'</div></div>'}).join('')||'<div class="sub" style="padding:14px">該当なし</div>'}
+        return '<div class="it" data-i="'+i+'"><div class="ic" style="--h:'+hue(s.s||s.t)+'">'+esc(TK[s.t]||(s.t||'')[0]||'')+'</div><div class="m"><span class="sub">No.'+s.no+' ・ '+esc(s.t)+(s.r?' ★'+s.r:'')+'</span><b>'+esc(s.n)+lvT(s)+'</b><span class="sub">'+(s.own?(s.got?fmt(s.got):'所持'):'未所持')+'</span></div><div class="bd">'+bd.join('')+'</div></div>'}).join('')||'<div class="sub" style="padding:14px">該当なし</div>'}
       const forms=s=>[{k:'初',lv:1,st:s.st}].concat(s.fm||[],s.kxi?[{k:'極',st:s.kx.st}]:[]);
       function sheet(i,v){
         const s=SW[i],fs=forms(s),cur=v||(s.sh?'極':(s.cf||'初')),f=fs.find(x=>x.k==cur)||fs[0],isK=f.k=='極',g=s.g,lv=g&&g[1]!=null?g[1]:0;
@@ -359,7 +361,9 @@
         const dots=ds.map(k=>{const l=[...new Set((DM[k]||[]).filter(e=>!(e.b&&e.b>e.a)).map(e=>e.l).concat(annOn(k).map(e=>e.l)))].sort();return '<span>'+l.slice(0,4).map(x=>'<i style="background:'+LC[x]+'"></i>').join('')+'</span>'}).join('');
         wk+='<div class="wk" data-d="'+ds[0]+'"><div class="nums">'+nums+'</div>'+(ln.length?'<div class="bars" style="grid-template-rows:repeat('+ln.length+',17px)">'+bars+'</div>':'')+'<div class="dots">'+dots+'</div>'+(hid?'<div class="more">ほか'+hid+'件</div>':'')+'</div>'}
       const he=CA.hl!=null?EV[CA.hl]:null,ev=CA.sel?(DM[CA.sel]||[]).concat(annOn(CA.sel)).sort((x,y)=>x.l-y.l):[];
-      const det=CA.sel?'<h2>'+md(CA.sel)+'（'+WD[pd(CA.sel).getDay()]+'）</h2><div class="card">'+(ev.map(evC).join('')||'<div class="sub">予定なし</div>')+'</div>':(he?'<h2>選択中の予定</h2><div class="card">'+evC(he)+'</div>':'');
+      const tbd=CA.y===nw.getFullYear()&&CA.m===nw.getMonth()?EV.filter(e=>e.l<5&&!e.a):[];
+      const tbdH=tbd.length?'<h2>開催予定（日程未定）</h2><div class="card">'+tbd.map(e=>evH(e)).join('')+'</div>':'';
+      const det=(CA.sel?'<h2>'+md(CA.sel)+'（'+WD[pd(CA.sel).getDay()]+'）</h2><div class="card">'+(ev.map(evC).join('')||'<div class="sub">予定なし</div>')+'</div>':(he?'<h2>選択中の予定</h2><div class="card">'+evC(he)+'</div>':''))+tbdH;
       $('#t2').innerHTML='<div class="row" style="align-items:center"><button class="btn" id="pv">◀</button><button class="btn ym" id="ym">'+CA.y+'年 '+(CA.m+1)+'月<small>▾</small></button><button class="btn" id="nx">▶</button><button class="btn" id="td">今日</button></div><div class="card'+(CA.hl!=null?' dim':'')+'" id="calb" style="padding:10px 6px"><div id="calg"><div class="wd">'+[...'日月火水木金土'].map(x=>'<div>'+x+'</div>').join('')+'</div>'+wk+'</div></div><div class="lg">'+LN.map((x,i)=>'<span><i style="background:'+LC[i]+'"></i>'+x+'</span>').join('')+'</div><div id="evl">'+det+'</div>';
       $('#pv').onclick=()=>slideCal(-1);$('#nx').onclick=()=>slideCal(1);
       $('#ym').onclick=ymPick;
