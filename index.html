@@ -12,17 +12,6 @@
       @media (prefers-color-scheme:dark){
         :root:not([data-theme="light"]){--bg:#0a0f1f;--g1:rgba(88,227,216,.10);--g2:rgba(228,138,176,.09);--hd:#0d1328;--card:rgba(26,36,68,.66);--ink:#e8edff;--sub:#9aa7cc;--line:rgba(140,170,255,.2);--navy:#93b2ff;--ac2:#58e3d8;--gold:#e3c274;--on:#0a1022;--chip:rgba(147,178,255,.12);--ok:#5fd0a0;--sh:0 1px 0 rgba(147,178,255,.10) inset,0 10px 30px rgba(0,0,0,.35);color-scheme:dark}}
         :root[data-theme="dark"]{--bg:#0a0f1f;--g1:rgba(88,227,216,.10);--g2:rgba(228,138,176,.09);--hd:#0d1328;--card:rgba(26,36,68,.66);--ink:#e8edff;--sub:#9aa7cc;--line:rgba(140,170,255,.2);--navy:#93b2ff;--ac2:#58e3d8;--gold:#e3c274;--on:#0a1022;--chip:rgba(147,178,255,.12);--ok:#5fd0a0;--sh:0 1px 0 rgba(147,178,255,.10) inset,0 10px 30px rgba(0,0,0,.35);color-scheme:dark}
-      @media (max-width:600px){
-        .sub{font-size:11.5px;line-height:1.4}
-        .it{gap:11px;padding:10px 13px}
-        .it b{font-size:16.5px}
-        .ic{width:40px;height:40px;font-size:17px;border-radius:14px 5px 14px 5px}
-        .lv{font-size:12px;margin-left:7px}
-        .b{font-size:11px;padding:2px 8px}
-        input,select,.btn{font-size:14px;padding:8px 11px}
-        input{font-size:16px}
-        .chip{font-size:13px;padding:5.5px 12px}
-      }
       html{
         height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}*,*::before,*::after{box-sizing:inherit}
       body{
@@ -197,6 +186,17 @@
       .bar.hl{opacity:1;position:relative;z-index:2;outline:2px solid var(--ink);outline-offset:1px;box-shadow:0 0 0 2px var(--card),0 0 12px var(--c)}
       .ev.hl{background:var(--card);outline:2px solid var(--navy);outline-offset:-1px}
       #evl{scroll-margin-top:72px;scroll-margin-bottom:100px}
+      @media (max-width:600px){
+        .sub{font-size:11.5px;line-height:1.4}
+        .it{gap:11px;padding:10px 13px}
+        .it b{font-size:16.5px}
+        .ic{width:40px;height:40px;font-size:17px;border-radius:14px 5px 14px 5px}
+        .lv{font-size:12px;margin-left:7px}
+        .b{font-size:11px;padding:2px 8px}
+        input,select,.btn{font-size:14px;padding:8px 11px}
+        input{font-size:16px}
+        .chip{font-size:13px;padding:5.5px 12px}
+      }
     </style>
   </head>
   
@@ -206,7 +206,7 @@
         <span id="pt"></span>
         <small id="ps"></small>
       </div>
-      <small id="pv_ver">v1.1.9</small>
+      <small id="pv_ver">v1.1.10</small>
     </header>
     
     <main>
