@@ -104,7 +104,9 @@
           opacity:.35}
       .bars{
         gap:2px 0}
-        .bar{height:17px;line-height:17px;margin:0 1px;padding:0 6px;font-size:10.5px;color:#fff;background:var(--c);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-radius:9px}
+      .bars{
+        gap:2px 0}
+        .bar{height:17px;line-height:17px;margin:0 1px;padding:0 6px;font-size:10.5px;color:#fff;background:var(--c);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-radius:9px;box-shadow:0 1px 4px rgba(0,0,0,.18)}
         .bar.cl{
           border-top-left-radius:2px;border-bottom-left-radius:2px;margin-left:0}
         .bar.cr{
@@ -115,8 +117,6 @@
         width:6px;height:6px;border-radius:50%}
       .more{
         font-size:10px;color:var(--sub);text-align:right;padding-right:6px}
-      .bar{
-        box-shadow:0 1px 4px rgba(0,0,0,.18)}
       .lg{
         display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--sub);margin:4px 3px 10px}.lg i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px}
       .bar2{
@@ -130,11 +130,9 @@
       #sb th,#sb td{padding:6px 4px;border-bottom:1px solid var(--line)}
       #sb th{color:var(--sub);font-weight:600;text-align:left}
       #sb td{color:var(--ink)}
-      #sb .kv,#sb dl,#sb ul{font-size:12px;line-height:1.5}
-      #sb .kv>div,#sb dl>div{padding:6px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px}
-      #sb .kv span:first-child,#sb dt{color:var(--sub);font-weight:600;white-space:nowrap}
-      #sb .kv span:last-child,#sb dd{color:var(--ink);margin:0;text-align:right}
-
+      #sb .kv{font-size:12px;line-height:1.5}
+      #sb .kv span:first-child{color:var(--sub);font-weight:600}
+      #sb .kv span:last-child{color:var(--ink)}
       .xbtn{background:transparent!important;border:none!important;width:28px!important;min-width:28px!important;max-width:28px!important;height:28px!important;min-height:28px!important;aspect-ratio:1/1;padding:0!important;font-size:16px;line-height:1;color:#666;cursor:pointer;border-radius:6px;display:inline-flex!important;align-items:center;justify-content:center;flex:0 0 28px!important}
       .xbtn:hover{background:#f0f0f0;color:#111}
       table{
@@ -159,16 +157,6 @@
         align-self:stretch;margin-top:4px;padding-top:5px;border-top:1px solid var(--gold);font-size:13px;font-weight:700;letter-spacing:.2em;color:var(--ink)}
       .hsekki{
         writing-mode:vertical-rl;font:700 16px/1.2 "Hiragino Mincho ProN","Yu Mincho",serif;letter-spacing:.28em;color:var(--ink);opacity:.82;padding:4px 8px;border-left:1px solid var(--line)}
-      .hm{
-        flex:1}
-      .hst{
-        display:flex;gap:6px}
-        .hst div{
-          flex:1;text-align:center;background:var(--chip);border-radius:12px;padding:7px 2px}
-        .hst b{
-          display:block;font:700 22px/1.1 "Hiragino Mincho ProN","Yu Mincho",serif;color:var(--navy)}
-        .hst span{
-          font-size:10.5px;color:var(--sub);letter-spacing:.04em}
       .kv{
         display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid var(--line);font-size:14px}
         .kv span:first-child{color:var(--sub);flex:none}
@@ -186,8 +174,9 @@
       .bar.hl{opacity:1;position:relative;z-index:2;outline:2px solid var(--ink);outline-offset:1px;box-shadow:0 0 0 2px var(--card),0 0 12px var(--c)}
       .ev.hl{background:var(--card);outline:2px solid var(--navy);outline-offset:-1px}
       #evl{scroll-margin-top:72px;scroll-margin-bottom:100px}
-      @media (max-width:600px){
+      @media (max-width:400px){
         .sub{font-size:11.5px;line-height:1.4}
+        .ann .sub{font-size:13px;line-height:1.5}
         .it{gap:11px;padding:10px 13px}
         .it b{font-size:16.5px}
         .ic{width:40px;height:40px;font-size:17px;border-radius:14px 5px 14px 5px}
@@ -196,7 +185,6 @@
         input,select,.btn{font-size:14px;padding:8px 11px}
         input{font-size:16px}
         .chip{font-size:13px;padding:5.5px 12px}
-        .eng-anniv .sub{font-size:13.5px;line-height:1.45}
       }
     </style>
   </head>
@@ -207,7 +195,7 @@
         <span id="pt"></span>
         <small id="ps"></small>
       </div>
-      <small id="pv_ver">v1.1.13</small>
+      <small id="pv_ver">v1.1.14</small>
     </header>
     
     <main>
@@ -290,7 +278,7 @@
       let res='冬至';
       for(const[k,name]of s){if(v>=k)res=name;}
       return res;
-    }
+      }
       function today(){const n=new Date(),a=annOn(T);let nx='';
       if(!a.length){const r=[];for(let i=1;i<=366&&r.length<3;i++){const d=new Date(n);d.setDate(d.getDate()+i);const k=iso(d);annOn(k).forEach(x=>r.length<3&&r.push({d:k,t:x.t}))}nx=r.map(x=>'<div class="sub">'+md(x.d)+'　'+esc(x.t)+'（あと'+days(T,x.d)+'日）</div>').join('')}
       const on=EV.filter(e=>e.l<5&&e.a&&e.a<=T&&(e.b?T<=e.b:e.a===T)).sort((x,y)=>x.l-y.l||(x.b||'9').localeCompare(y.b||'9'));
@@ -298,11 +286,11 @@
       const tbd=EV.filter(e=>e.l<5&&!e.a);
       const planH=soon.map(e=>evH(e).replace('<small style','<small>'+md(e.a)+'〜</small> <small style')).concat(tbd.map(e=>evH(e).replace('<small style','<small>時期未定</small> <small style'))).join('');
       $('#t0').innerHTML='<div class="card hero"><div class="hdbox"><div class="hy">'+n.getFullYear()+'年</div><div class="hmd">'+kn(n.getMonth()+1)+'月'+kn(n.getDate())+'日</div><div class="hwd">'+WD[n.getDay()]+'曜日</div></div><div class="hsekki">'+sekki(n)+'</div></div>'
-      +'<h2>顕現記念日</h2><div class="card">'+(a.length?a.map(x=>'<div class="big" style="font-size:17px">🎉 '+esc(x.t)+'</div>').join(''):'<div class="sub">今日が記念日の刀剣男士はいません</div>'+nx)+'</div>'
+      +'<h2>顕現記念日</h2><div class="card ann">'+(a.length?a.map(x=>'<div class="big" style="font-size:17px">🎉 '+esc(x.t)+'</div>').join(''):'<div class="sub">今日が記念日の刀剣男士はいません</div>'+nx)+'</div>'
       +'<h2>開催中</h2><div class="card">'+(on.map(e=>evH(e).replace('</div>',(e.b?' <small>あと'+days(T,e.b)+'日</small>':'')+'</div>')).join('')||'<div class="sub">なし</div>')+'</div>'
       +'<h2>開催予定</h2><div class="card">'+(planH||'<div class="sub">なし</div>')+'</div>'}
       
-        /* 刀帳 */
+      /* 刀帳 */
       const DX={q:'',t:'',s:'',c:'all',k:'no',asc:true},hue=s=>{let h=0;for(const c of s||'')h=(h*31+c.charCodeAt(0))%360;return h};
       const opt=(a,l)=>'<option value="">'+l+'：すべて</option>'+[...new Set(a.filter(Boolean))].map(v=>'<option>'+esc(v)+'</option>').join('');
       const KEY={no:s=>s.no,name:s=>s.n,rare:s=>s.r,impl:s=>s.d||'',got:s=>s.got||'',exp:s=>s.g?s.g[2]:-1,hp:s=>+s.st[1][0]||-1,atk:s=>+s.st[1][1]||-1,spd:s=>+s.st[1][3]||-1};
@@ -344,7 +332,7 @@
       function ymPick(){
         const ys=Array.from({length:nw.getFullYear()-2014+3},(_,i)=>2014+i).map(y=>'<button class="chip'+(y==CA.y?' on':'')+'" data-py="'+y+'">'+y+'</button>').join('');
         const ms=Array.from({length:12},(_,i)=>'<button class="chip'+(i==CA.m?' on':'')+'" data-pm="'+i+'">'+(i+1)+'月</button>').join('');
-        $('#sb').innerHTML='<div class="row" style="align-items:center"><div class="big">年月を選択</div><button class="xbtn" id="closeSet" data-close aria-label="閉じる">×</button></div>'
+        $('#sb').innerHTML='<div class="row" style="align-items:center"><div class="big">年月を選択</div><button class="xbtn" aria-label="閉じる">×</button></div>'
         +'<h2>年</h2><div class="yp-grid">'+ys+'</div><h2>月</h2><div class="yp-grid">'+ms+'</div>';
         $('#sheet').classList.add('on');
         document.querySelectorAll('#sb [data-py]').forEach(b=>b.onclick=()=>{CA.y=+b.dataset.py;ymPick();cal()});
