@@ -310,7 +310,7 @@
       
       /* カレンダー */
       const evC=e=>'<div class="ev'+(e.id==CA.hl?' hl':'')+'" data-ev="'+e.id+'" style="border-color:'+LC[e.l]+'"><small style="color:'+LC[e.l]+'">'+LN[e.l]+'</small> '+esc(etl(e))+'<div class="sub">'+fmt(e.a)+(e.b&&e.b>e.a?' 〜 '+fmt(e.b):'')+'</div></div>';
-      const nw=new Date(),CA={y:nw.getFullYear(),m:nw.getMonth(),sel:T,hl:null},MAXL=4,PR=[0,1,2,4,3,5,6];
+      const nw=new Date(),CA={y:nw.getFullYear(),m:nw.getMonth(),sel:T,hl:null,tp:0,tk:''},MAXL=4,PR=[0,1,2,4,3,5,6];
       function cal(go){const f=new Date(CA.y,CA.m,1),ws=new Date(f);ws.setDate(1-f.getDay());const lt=new Date(CA.y,CA.m+1,0),we=new Date(lt);we.setDate(lt.getDate()+(6-lt.getDay()));
       const nwk=Math.round((we-ws)/864e5+1)/7;let wk='';
       for(let w=0;w<nwk;w++){const d0=new Date(ws);d0.setDate(ws.getDate()+w*7);const ds=[0,1,2,3,4,5,6].map(i=>{const d=new Date(d0);d.setDate(d0.getDate()+i);return iso(d)});
@@ -321,13 +321,16 @@
         bars+='<div class="bar'+(g.cl?' cl':'')+(g.cr?' cr':'')+(g.e.id==CA.hl?' hl':'')+'" data-e="'+g.e.id+'" style="grid-column:'+(g.s+1)+'/'+(g.t+2)+';grid-row:'+(r+1)+';--c:'+LC[g.e.l]+'">'+esc(etl(g.e))+'</div>'});
         const dots=ds.map(k=>{const l=[...new Set((DM[k]||[]).filter(e=>!(e.b&&e.b>e.a)).map(e=>e.l).concat(annOn(k).map(e=>e.l)))].sort();return '<span>'+l.slice(0,4).map(x=>'<i style="background:'+LC[x]+'"></i>').join('')+'</span>'}).join('');
         wk+='<div class="wk" data-d="'+ds[0]+'"><div class="nums">'+nums+'</div>'+(ln.length?'<div class="bars" style="grid-template-rows:repeat('+ln.length+',17px)">'+bars+'</div>':'')+'<div class="dots">'+dots+'</div>'+(hid?'<div class="more">ほか'+hid+'件</div>':'')+'</div>'}
-      const ev=(DM[CA.sel]||[]).concat(annOn(CA.sel)).sort((x,y)=>x.l-y.l);
-      $('#t2').innerHTML='<div class="row" style="align-items:center"><button class="btn" id="pv">◀</button><div class="big" style="text-align:center">'+CA.y+'年'+(CA.m+1)+'月</div><button class="btn" id="nx">▶</button><button class="btn" id="td">今日</button></div><div class="card'+(CA.hl!=null?' dim':'')+'" style="padding:10px 6px"><div class="wd">'+[...'日月火水木金土'].map(x=>'<div>'+x+'</div>').join('')+'</div>'+wk+'</div><div class="lg">'+LN.map((x,i)=>'<span><i style="background:'+LC[i]+'"></i>'+x+'</span>').join('')+'</div><div id="evl"><h2>'+md(CA.sel)+'（'+WD[pd(CA.sel).getDay()]+'）</h2><div class="card">'+(ev.map(evC).join('')||'<div class="sub">予定なし</div>')+'</div></div>';
+      const he=CA.hl!=null?EV[CA.hl]:null,ev=CA.sel?(DM[CA.sel]||[]).concat(annOn(CA.sel)).sort((x,y)=>x.l-y.l):[];
+      const det=CA.sel?'<h2>'+md(CA.sel)+'（'+WD[pd(CA.sel).getDay()]+'）</h2><div class="card">'+(ev.map(evC).join('')||'<div class="sub">予定なし</div>')+'</div>':(he?'<h2>選択中の予定</h2><div class="card">'+evC(he)+'</div>':'');
+      $('#t2').innerHTML='<div class="row" style="align-items:center"><button class="btn" id="pv">◀</button><div class="big" style="text-align:center">'+CA.y+'年'+(CA.m+1)+'月</div><button class="btn" id="nx">▶</button><button class="btn" id="td">今日</button></div><div class="card'+(CA.hl!=null?' dim':'')+'" style="padding:10px 6px"><div class="wd">'+[...'日月火水木金土'].map(x=>'<div>'+x+'</div>').join('')+'</div>'+wk+'</div><div class="lg">'+LN.map((x,i)=>'<span><i style="background:'+LC[i]+'"></i>'+x+'</span>').join('')+'</div><div id="evl">'+det+'</div>';
       $('#pv').onclick=()=>{CA.m--;if(CA.m<0){CA.m=11;CA.y--}cal()};$('#nx').onclick=()=>{CA.m++;if(CA.m>11){CA.m=0;CA.y++}cal()};
       $('#td').onclick=()=>{CA.y=nw.getFullYear();CA.m=nw.getMonth();CA.sel=T;CA.hl=null;cal()};if(go)$('#evl').scrollIntoView({behavior:'smooth',block:'nearest'})}
-      $('#t2').onclick=e=>{const li=e.target.closest('[data-ev]');if(li){const id=+li.dataset.ev;CA.hl=CA.hl===id?null:id;cal();return}
-      const w=e.target.closest('.wk');if(!w)return;const r=w.getBoundingClientRect(),c=Math.min(6,Math.max(0,Math.floor((e.clientX-r.left)/r.width*7))),d=pd(w.dataset.d),b=e.target.closest('.bar');
-      d.setDate(d.getDate()+c);CA.sel=iso(d);CA.hl=b?+b.dataset.e:null;cal(true)};
+      $('#t2').onclick=e=>{const now=Date.now(),li=e.target.closest('[data-ev]');if(li){const id=+li.dataset.ev;CA.hl=CA.hl===id?null:id;cal();return}
+      const b=e.target.closest('.bar');if(b){const id=+b.dataset.e,k='b'+id,dbl=CA.tk===k&&now-CA.tp<350;CA.tp=now;CA.tk=k;if(dbl){$('#evl').scrollIntoView({behavior:'smooth',block:'nearest'});return}CA.sel=null;CA.hl=CA.hl===id?null:id;cal();return}
+      const n=e.target.closest('.nums');if(n){const r=n.getBoundingClientRect(),c=Math.min(6,Math.max(0,Math.floor((e.clientX-r.left)/r.width*7))),d=pd(n.closest('.wk').dataset.d);
+      d.setDate(d.getDate()+c);const s=iso(d),k='d'+s,dbl=CA.tk===k&&now-CA.tp<350;CA.tp=now;CA.tk=k;CA.sel=s;CA.hl=null;cal(dbl);return}
+      if(!e.target.closest('button,#evl')&&(CA.hl!=null||CA.sel!=null)){CA.hl=null;CA.sel=null;cal()}};
       
       /* 回想 */
       const RC={f:'all',q:''},done=new Set(U.rc);
