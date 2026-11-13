@@ -93,6 +93,11 @@
           text-align:center;font-size:12px;color:var(--sub);letter-spacing:.1em;padding-bottom:4px}
       .wk{
         border-top:1px solid var(--line);padding:3px 0 5px;cursor:pointer;touch-action:manipulation}
+      #t2 .ym{flex:2;display:flex;align-items:center;justify-content:center;gap:8px;font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;font-size:18px;font-weight:700;letter-spacing:.08em;cursor:pointer}
+      #t2 .ym::before{content:"";width:6px;height:6px;transform:rotate(45deg);background:var(--ac2);box-shadow:0 0 8px var(--ac2)}
+      #t2 .ym small{font-size:11px;color:var(--ac2)}
+      .yp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
+      .yp-grid .chip{text-align:center;padding:9px 4px;border-radius:14px}
       .nums{
         text-align:center}
         .nums span{
@@ -125,10 +130,16 @@
         .bar2 i{
           display:block;height:100%;background:linear-gradient(90deg,var(--navy),var(--ac2));box-shadow:0 0 10px var(--ac2)}
       #sheet{
-        position:fixed;inset:0;z-index:20;background:rgba(5,8,20,.5);display:none;align-items:flex-end;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+        position:fixed;inset:0;z-index:20;background:rgba(5,8,20,.45);display:none;align-items:flex-end;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
         #sheet.on{display:flex}
         #sheet>div{
           background:var(--hd);width:100%;max-height:86%;overflow:auto;border-radius:22px 22px 0 0;border-top:1px solid var(--line);padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px));max-width:640px;margin:0 auto}
+      #sheet.pop{align-items:center;padding:16px}
+      #sheet.pop>div{width:min(92%,400px);max-height:80%;border-radius:22px;border:1px solid var(--line);padding:18px;background:rgba(251,248,241,.82);-webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);box-shadow:var(--sh),0 18px 40px rgba(0,0,0,.25)}
+      @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) #sheet.pop>div{background:rgba(16,24,48,.78)}}
+      :root[data-theme="dark"] #sheet.pop>div{background:rgba(16,24,48,.78)}
+      .yp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
+      .yp-grid .chip{text-align:center;padding:9px 4px;border-radius:14px}
       table{
         width:100%;border-collapse:collapse;font-size:14px}td,th{padding:5px 6px;text-align:right;border-bottom:1px solid var(--line)}td:first-child,th:first-child{text-align:left}th{color:var(--sub);font-weight:600;letter-spacing:.1em;font-size:12px}
       .ttl{
@@ -306,11 +317,20 @@
         +'<table style="margin:4px 0 10px"><tr><th></th><th>初期</th><th>現在</th><th>最大</th><th>乱舞9</th><th>乱舞10</th></tr>'+STN.map((n,j)=>{const curSt=(g&&g[6]&&isK===!!s.sh)?g[6][j]:null;return'<tr><td>'+n+'</td><td>'+(f.st[0][j]==null?'-':esc(f.st[0][j]))+'</td><td>'+(curSt==null?'-':esc(curSt))+'</td>'+[1,2,3].map(x=>'<td>'+(f.st[x]&&f.st[x][j]!=null?esc(f.st[x][j]):'-')+'</td>').join('')+'</tr>'}).join('')+'</table>'
         +Object.entries(s.get||{}).map(e=>kv(e[0],e[1])).join('');
         $('#sheet').classList.add('on');$('#cl').onclick=()=>$('#sheet').classList.remove('on');document.querySelectorAll('#sb [data-k]').forEach(b=>b.onclick=()=>sheet(i,b.dataset.k))}
-      $('#sheet').onclick=e=>{if(e.target.id=='sheet')$('#sheet').classList.remove('on')};
+      $('#sheet').onclick=e=>{if(e.target.id=='sheet')$('#sheet').classList.remove('on','pop')};
       
       /* カレンダー */
       const evC=e=>'<div class="ev'+(e.id==CA.hl?' hl':'')+'" data-ev="'+e.id+'" style="border-color:'+LC[e.l]+'"><small style="color:'+LC[e.l]+'">'+LN[e.l]+'</small> '+esc(etl(e))+'<div class="sub">'+fmt(e.a)+(e.b&&e.b>e.a?' 〜 '+fmt(e.b):'')+'</div></div>';
       const nw=new Date(),CA={y:nw.getFullYear(),m:nw.getMonth(),sel:T,hl:null,tp:0,tk:''},MAXL=4,PR=[0,1,2,4,3,5,6];
+      function ymPick(){
+        const ys=Array.from({length:nw.getFullYear()-2014+3},(_,i)=>2014+i).map(y=>'<button class="chip'+(y==CA.y?' on':'')+'" data-py="'+y+'">'+y+'</button>').join('');
+        const ms=Array.from({length:12},(_,i)=>'<button class="chip'+(i==CA.m?' on':'')+'" data-pm="'+i+'">'+(i+1)+'月</button>').join('');
+        $('#sb').innerHTML='<div class="row" style="align-items:center"><div class="big">年月を選択</div><button class="btn" id="cl">閉じる</button></div>'
+        +'<h2>年</h2><div class="yp-grid">'+ys+'</div><h2>月</h2><div class="yp-grid">'+ms+'</div>';
+        $('#sheet').classList.add('on','pop');$('#cl').onclick=()=>$('#sheet').classList.remove('on','pop');
+        document.querySelectorAll('#sb [data-py]').forEach(b=>b.onclick=()=>{CA.y=+b.dataset.py;ymPick();cal()});
+        document.querySelectorAll('#sb [data-pm]').forEach(b=>b.onclick=()=>{CA.m=+b.dataset.pm;$('#sheet').classList.remove('on','pop');cal()});
+      }
       function cal(go){const f=new Date(CA.y,CA.m,1),ws=new Date(f);ws.setDate(1-f.getDay());const lt=new Date(CA.y,CA.m+1,0),we=new Date(lt);we.setDate(lt.getDate()+(6-lt.getDay()));
       const nwk=Math.round((we-ws)/864e5+1)/7;let wk='';
       for(let w=0;w<nwk;w++){const d0=new Date(ws);d0.setDate(ws.getDate()+w*7);const ds=[0,1,2,3,4,5,6].map(i=>{const d=new Date(d0);d.setDate(d0.getDate()+i);return iso(d)});
@@ -323,9 +343,12 @@
         wk+='<div class="wk" data-d="'+ds[0]+'"><div class="nums">'+nums+'</div>'+(ln.length?'<div class="bars" style="grid-template-rows:repeat('+ln.length+',17px)">'+bars+'</div>':'')+'<div class="dots">'+dots+'</div>'+(hid?'<div class="more">ほか'+hid+'件</div>':'')+'</div>'}
       const he=CA.hl!=null?EV[CA.hl]:null,ev=CA.sel?(DM[CA.sel]||[]).concat(annOn(CA.sel)).sort((x,y)=>x.l-y.l):[];
       const det=CA.sel?'<h2>'+md(CA.sel)+'（'+WD[pd(CA.sel).getDay()]+'）</h2><div class="card">'+(ev.map(evC).join('')||'<div class="sub">予定なし</div>')+'</div>':(he?'<h2>選択中の予定</h2><div class="card">'+evC(he)+'</div>':'');
-      $('#t2').innerHTML='<div class="row" style="align-items:center"><button class="btn" id="pv">◀</button><div class="big" style="text-align:center">'+CA.y+'年'+(CA.m+1)+'月</div><button class="btn" id="nx">▶</button><button class="btn" id="td">今日</button></div><div class="card'+(CA.hl!=null?' dim':'')+'" style="padding:10px 6px"><div class="wd">'+[...'日月火水木金土'].map(x=>'<div>'+x+'</div>').join('')+'</div>'+wk+'</div><div class="lg">'+LN.map((x,i)=>'<span><i style="background:'+LC[i]+'"></i>'+x+'</span>').join('')+'</div><div id="evl">'+det+'</div>';
+      $('#t2').innerHTML='<div class="row" style="align-items:center"><button class="btn" id="pv">◀</button><button class="btn ym" id="ym">'+CA.y+'年 '+(CA.m+1)+'月<small>▾</small></button><button class="btn" id="nx">▶</button><button class="btn" id="td">今日</button></div><div class="card'+(CA.hl!=null?' dim':'')+'" id="calb" style="padding:10px 6px"><div class="wd">'+[...'日月火水木金土'].map(x=>'<div>'+x+'</div>').join('')+'</div>'+wk+'</div><div class="lg">'+LN.map((x,i)=>'<span><i style="background:'+LC[i]+'"></i>'+x+'</span>').join('')+'</div><div id="evl">'+det+'</div>';
       $('#pv').onclick=()=>{CA.m--;if(CA.m<0){CA.m=11;CA.y--}cal()};$('#nx').onclick=()=>{CA.m++;if(CA.m>11){CA.m=0;CA.y++}cal()};
+      $('#ym').onclick=ymPick;
       $('#td').onclick=()=>{CA.y=nw.getFullYear();CA.m=nw.getMonth();CA.sel=T;CA.hl=null;cal()};if(go)$('#evl').scrollIntoView({behavior:'smooth',block:'nearest'})}
+      let sx=0,sy=0;$('#t2').ontouchstart=e=>{if(e.target.closest('#calb')&&e.touches.length==1){sx=e.touches[0].clientX;sy=e.touches[0].clientY}else sx=0};
+      $('#t2').ontouchend=e=>{if(!sx)return;const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;sx=0;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5){if(dx<0){CA.m++;if(CA.m>11){CA.m=0;CA.y++}}else{CA.m--;if(CA.m<0){CA.m=11;CA.y--}}cal()}};
       $('#t2').onclick=e=>{const now=Date.now(),li=e.target.closest('[data-ev]');if(li){const id=+li.dataset.ev;CA.hl=CA.hl===id?null:id;cal();return}
       const b=e.target.closest('.bar');if(b){const id=+b.dataset.e,k='b'+id,dbl=CA.tk===k&&now-CA.tp<350;CA.tp=now;CA.tk=k;if(dbl){$('#evl').scrollIntoView({behavior:'smooth',block:'nearest'});return}CA.sel=null;CA.hl=CA.hl===id?null:id;cal();return}
       const n=e.target.closest('.nums');if(n){const r=n.getBoundingClientRect(),c=Math.min(6,Math.max(0,Math.floor((e.clientX-r.left)/r.width*7))),d=pd(n.closest('.wk').dataset.d);
