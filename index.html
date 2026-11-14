@@ -75,9 +75,12 @@
       .b{
         font-size:10px;padding:1.5px 7px;border-radius:999px;background:var(--chip);color:var(--navy);border:1px solid var(--line);white-space:nowrap}
         .b.g{color:var(--ok)}
-        .b.o{color:#6d4f0e;background:linear-gradient(135deg,#f6e7b8,#e4c473);border-color:transparent}
+        .b.o{display:inline-grid;place-items:center;width:19px;height:19px;padding:0;line-height:1;color:#6d4f0e;background:linear-gradient(135deg,#f6e7b8,#e4c473);border-color:transparent}
+        .b.m{color:var(--sub);background:rgba(128,128,128,.12);border-color:transparent}
       .ev{
-        border-left:3px solid var(--navy);padding:7px 11px;margin:7px 0;background:var(--chip);border-radius:10px}
+        border-left:3px solid var(--navy);padding:7px 11px;margin:7px 0;background:#fff;border:1px solid var(--line);border-left-width:3px;border-radius:10px}
+      @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ev{background:var(--hd)}}
+      :root[data-theme="dark"] .ev{background:var(--hd)}
         .ev small{color:var(--sub)}
       .wd,.nums,.dots,.bars{
         display:grid;grid-template-columns:repeat(7,1fr)}
@@ -277,7 +280,7 @@
       const evH=e=>'<div class="ev" style="border-color:'+LC[e.l]+'"><small style="color:'+LC[e.l]+'">'+LN[e.l]+'</small> '+esc(etl(e))+(e.b?' <small>〜'+md(e.b)+'</small>':'')+(e.d?'<div class="sub" style="margin-top:4px;white-space:pre-line">'+esc(e.d)+'</div>':'')+'</div>';
       const kn=n=>{const d='〇一二三四五六七八九';if(n<10)return d[n];if(n==10)return'十';if(n<20)return'十'+d[n-10];return d[Math.floor(n/10)]+'十'+(n%10?d[n%10]:'')};
       const TK={短刀:'短',脇差:'脇',打刀:'打',太刀:'太',大太刀:'大',槍:'槍',薙刀:'薙',剣:'剣'};
-      const PT=[['縁側','今日のようす'],['刀帳',''],['カレンダー','年表の予定'],['回想','回収の記録'],['道具','シミュレーター・グラフ']];
+      const PT=[['縁側','今日のようす'],['刀帳',''],['カレンダー','年表の予定'],['収集','回収の記録'],['道具','シミュレーター・グラフ']];
       const IC=['<path d="M3 17h18M6 17a6 6 0 0112 0M12 4v3M4.5 8.5l2 2M19.5 8.5l-2 2"/>','<path d="M5 4h11a3 3 0 013 3v13H8a3 3 0 01-3-3V4zM8 4v13M8 17h11"/>','<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>','<rect x="4" y="5" width="16" height="14" rx="3"/><path d="M4 16l5-5 4 4 3-3 4 4"/>','<path d="M5 7h9M18 7h1M5 17h1M10 17h9"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/>'];
       $('#dock').innerHTML=PT.map((t,i)=>'<button data-i="'+i+'"><svg viewBox="0 0 24 24">'+IC[i]+'</svg><span>'+t[0]+'</span></button>').join('');
       function show(i){document.querySelectorAll('#dock button').forEach((b,j)=>b.classList.toggle('on',i==j));document.querySelectorAll('section').forEach((s,j)=>s.classList.toggle('on',i==j));$('#pt').textContent=PT[i][0];$('#ps').textContent=i==1?SW.length+'振り':PT[i][1];scrollTo(0,0)}
@@ -305,11 +308,11 @@
       /* 刀帳 */
       const DX={q:'',t:'',s:'',c:'all',k:'no',asc:true},hue=s=>{let h=0;for(const c of s||'')h=(h*31+c.charCodeAt(0))%360;return h};
       const opt=(a,l)=>'<option value="">'+l+'：すべて</option>'+[...new Set(a.filter(Boolean))].map(v=>'<option>'+esc(v)+'</option>').join('');
-      const KEY={no:s=>s.no,name:s=>s.n,rare:s=>s.r,impl:s=>s.d||'',got:s=>s.got||'',exp:s=>s.g?s.g[2]:-1,hp:s=>+s.st[1][0]||-1,atk:s=>+s.st[1][1]||-1,spd:s=>+s.st[1][3]||-1};
-      const CH=[['all','全員',s=>1],['own','所持',s=>s.own],['no','未所持',s=>!s.own],['sh','修行済',s=>s.sh],['wait','修行待ち',s=>s.wait],['nokx','極未実装',s=>s.nokx]];
+      const KEY={no:s=>s.no,name:s=>s.n,rare:s=>s.r,impl:s=>s.d||'',got:s=>s.got||'',lv:s=>s.g&&s.g[1]!=null?s.g[1]:-1,ranbu:s=>s.g&&s.g[0]!=null?s.g[0]:-1,exp:s=>s.g?s.g[2]:-1,hp:s=>+s.st[1][0]||-1,atk:s=>+s.st[1][1]||-1,spd:s=>+s.st[1][3]||-1};
+      const CH=[['all','全員',s=>1],['own','所持',s=>s.own],['no','未所持',s=>!s.own],['sh','修行済',s=>s.sh],['wait','修行可能',s=>s.wait],['nokx','極未実装',s=>s.nokx]];
       const lvT=s=>{const a=[];if(s.cf&&!s.sh)a.push(s.cf);if(s.g&&s.g[1])a.push('Lv'+s.g[1]);const r=s.g&&s.g[0]?'<i>乱舞'+s.g[0]+'</i>':'';return a.length||r?'<span class="lv">'+a.join(' ')+r+'</span>':''};
       function dexInit(){
-        $('#t1').innerHTML='<div class="row"><input id="q" placeholder="名前で検索"><select id="k"><option value="no">刀帳番号順</option><option value="name">名前順</option><option value="rare">レア度順</option><option value="impl">実装日順</option><option value="got">顕現日順</option><option value="exp">経験値順</option><option value="hp">生存（最大）順</option><option value="atk">打撃（最大）順</option><option value="spd">機動（最大）順</option></select><button class="btn" id="o">↑昇順</button></div><div class="row"><select id="ft">'+opt(SW.map(s=>s.t),'刀種')+'</select><select id="fs">'+opt(SW.map(s=>s.s),'刀派')+'</select></div><div class="chips" id="ch"></div><div class="card" style="padding:0" id="ls"></div>';
+        $('#t1').innerHTML='<div class="row"><input id="q" placeholder="名前で検索"><select id="k"><option value="no">刀帳番号順</option><option value="name">名前順</option><option value="rare">レア度順</option><option value="impl">実装日順</option><option value="got">顕現日順</option><option value="lv">レベル順</option><option value="ranbu">乱舞レベル順</option><option value="exp">経験値順</option><option value="hp">生存（最大）順</option><option value="atk">打撃（最大）順</option><option value="spd">機動（最大）順</option></select><button class="btn" id="o">↑昇順</button></div><div class="row"><select id="ft">'+opt(SW.map(s=>s.t),'刀種')+'</select><select id="fs">'+opt(SW.map(s=>s.s),'刀派')+'</select></div><div class="chips" id="ch"></div><div class="card" style="padding:0" id="ls"></div>';
         $('#q').oninput=e=>{DX.q=e.target.value;dex()};$('#k').onchange=e=>{DX.k=e.target.value;dex()};$('#ft').onchange=e=>{DX.t=e.target.value;dex()};$('#fs').onchange=e=>{DX.s=e.target.value;dex()};
         $('#o').onclick=()=>{DX.asc=!DX.asc;$('#o').textContent=DX.asc?'↑昇順':'↓降順';dex()};$('#ch').onclick=e=>{if(e.target.dataset.c){DX.c=e.target.dataset.c;dex()}};
         $('#ls').onclick=e=>{const it=e.target.closest('.it');if(it)sheet(+it.dataset.i)};dex()}
@@ -318,9 +321,10 @@
         $('#ch').innerHTML=CH.map(c=>'<button class="chip'+(c[0]==DX.c?' on':'')+'" data-c="'+c[0]+'">'+c[1]+' '+SW.filter(c[2]).length+'</button>').join('');
         let a=SW.map((s,i)=>[s,i]).filter(x=>f(x[0])&&(!q||x[0].n.includes(q))&&(!DX.t||x[0].t==DX.t)&&(!DX.s||x[0].s==DX.s));
         const kf=KEY[DX.k];a.sort((x,y)=>{const p=kf(x[0]),r=kf(y[0]);return (typeof p=='string'?p.localeCompare(r,'ja'):p-r)*(DX.asc?1:-1)});
-        $('#ls').innerHTML=a.map(([s,i])=>{const bd=[];if(s.sh)bd.push('<span class="b o">極</span>');else if(s.wait)bd.push('<span class="b">修行待ち</span>');else if(s.nokx)bd.push('<span class="b">極未実装</span>');
+        $('#ls').innerHTML=a.map(([s,i])=>{const bd=[];if(s.wait)bd.push('<span class="b">修行可能</span>');else if(s.nokx)bd.push('<span class="b m">極未実装</span>');
         s.tg.forEach(t=>bd.push('<span class="b g">'+esc(t)+'</span>'));
-        return '<div class="it" data-i="'+i+'"><div class="ic" style="--h:'+hue(s.s||s.t)+'">'+esc(TK[s.t]||(s.t||'')[0]||'')+'</div><div class="m"><span class="sub">No.'+s.no+' ・ '+esc(s.t)+(s.r?' ★'+s.r:'')+'</span><b>'+esc(s.n)+lvT(s)+'</b><span class="sub">'+(s.own?(s.got?fmt(s.got):'所持'):'未所持')+'</span></div><div class="bd">'+bd.join('')+'</div></div>'}).join('')||'<div class="sub" style="padding:14px">該当なし</div>'}
+        const kB=s.sh?' <span class="b o" style="vertical-align:middle">極</span>':'';
+        return '<div class="it" data-i="'+i+'"><div class="ic" style="--h:'+hue(s.s||s.t)+'">'+esc(TK[s.t]||(s.t||'')[0]||'')+'</div><div class="m"><span class="sub">No.'+s.no+' ・ '+esc(s.t)+(s.r?' ・ レア'+s.r:'')+'</span><b>'+esc(s.n)+kB+lvT(s)+'</b><span class="sub">'+(s.own?(s.got?fmt(s.got):'所持'):'未所持')+'</span></div><div class="bd">'+bd.join('')+'</div></div>'}).join('')||'<div class="sub" style="padding:14px">該当なし</div>'}
       const forms=s=>[{k:'初',lv:1,st:s.st}].concat(s.fm||[],s.kxi?[{k:'極',st:s.kx.st}]:[]);
       function sheet(i,v){
         const s=SW[i],fs=forms(s),cur=v||(s.sh?'極':(s.cf||'初')),f=fs.find(x=>x.k==cur)||fs[0],isK=f.k=='極',g=s.g,lv=g&&g[1]!=null?g[1]:0;
@@ -330,13 +334,14 @@
         const dates=s.kxi?kv('顕現日',gt)+kv('修行完了日',s.sh?(s.kg?fmt(s.kg):'修行済'):'未修行'):kv('顕現日',gt);
         const gr=g?kv('累積経験値',g[2]==null?'':g[2].toLocaleString())+(!s.sh&&s.kxi&&g[5]!=null?kv('極相当Lv',String(g[5]).startsWith('極')?g[5]:'極Lv'+g[5]):'')+(!s.sh&&s.kxi&&g[4]!=null?kv('修行目安Lv','極Lv'+g[4]):''):'';
         const tl=s.tl&&!s.sh?kv('特ランクアップLv',s.tl[0]&&lv<s.tl[0]?'Lv'+s.tl[0]:'')+kv('修行可能Lv',s.tl[1]&&lv<s.tl[1]?'Lv'+s.tl[1]:''):'';
-        const stB=s.wait?' <span class="b">修行待ち</span>':(s.nokx?' <span class="b">極未実装</span>':'');
-                $('#sb').innerHTML='<div class="row" style="align-items:center"><div class="big">'+esc(s.n+(s.sh?'・極':''))+lvT(s)+'</div><button class="xbtn" id="cl" aria-label="閉じる">×</button></div>'
-        +'<div class="sub">No.'+s.no+' ・ '+esc([s.t,s.s].filter(Boolean).join('・'))+(s.r?' ・ ★'+s.r:'')+(s.sl?' ・ 刀装'+s.sl:'')+stB+'</div>'
-        +(fs.length>1?'<div class="seg"><span class="sub">ステータスを見る</span>'+fs.map(x=>'<button class="chip'+(x.k==f.k?' on':'')+'" data-k="'+x.k+'">'+x.k+'</button>').join('')+'</div>':'<div style="height:10px"></div>')
+        const stB=s.wait?' <span class="b">修行可能</span>':(s.nokx?' <span class="b m">極未実装</span>':'');
+        const segH=fs.length>1?'<div class="seg" style="margin:16px 0 6px"><span class="sub">ステータスを見る</span>'+fs.map(x=>'<button class="chip'+(x.k==f.k?' on':'')+'" data-k="'+x.k+'">'+x.k+'</button>').join('')+'</div>':'';
+        $('#sb').innerHTML='<div class="row" style="align-items:center"><div class="big">'+esc(s.n+(s.sh?'・極':''))+lvT(s)+'</div><button class="xbtn" id="cl" aria-label="閉じる">×</button></div>'
+        +'<div class="sub" style="margin-bottom:10px">No.'+s.no+' ・ '+esc([s.t,s.s].filter(Boolean).join('・'))+(s.r?' ・ レア'+s.r:'')+(s.sl?' ・ 刀装'+s.sl:'')+stB+'</div>'
         +dates+gr+tl+((dates||gr||tl)&&impl?'<div style="height:20px"></div>':'')+impl
         +Object.entries(s.get||{}).map(e=>kv(e.at(0),e.at(1))).join('')
-        +'<table style="margin:14px 0 6px"><tr><th></th><th>初期</th><th>現在</th><th>最大</th><th>乱舞9</th><th>乱舞10</th></tr>'+STN.map((n,j)=>{const curSt=(g&&g.at(6)&&isK===!!s.sh)?g.at(6).at(j):null;return'<tr><td>'+n+'</td><td>'+(f.st.at(0).at(j)==null?'-':esc(f.st.at(0).at(j)))+'</td><td>'+(curSt==null?'-':esc(curSt))+'</td>'+new Array(1,2,3).map(x=>'<td>'+(f.st.at(x)&&f.st.at(x).at(j)!=null?esc(f.st.at(x).at(j)):'-')+'</td>').join('')+'</tr>'}).join('')+'</table>';
+        +segH
+        +'<table style="margin:'+(segH?'6px':'14px')+' 0 6px"><tr><th></th><th>初期</th><th>現在</th><th>最大</th><th>乱舞9</th><th>乱舞10</th></tr>'+STN.map((n,j)=>{const curSt=(g&&g.at(6)&&isK===!!s.sh)?g.at(6).at(j):null;return'<tr><td>'+n+'</td><td>'+(f.st.at(0).at(j)==null?'-':esc(f.st.at(0).at(j)))+'</td><td>'+(curSt==null?'-':esc(curSt))+'</td>'+new Array(1,2,3).map(x=>'<td>'+(f.st.at(x)&&f.st.at(x).at(j)!=null?esc(f.st.at(x).at(j)):'-')+'</td>').join('')+'</tr>'}).join('')+'</table>';
         $('#sheet').classList.add('on');document.querySelectorAll('#sb [data-k]').forEach(b=>b.onclick=()=>sheet(i,b.dataset.k))}
 
       /* カレンダー */
@@ -392,11 +397,27 @@
       d.setDate(d.getDate()+c);const s=iso(d),k='d'+s,go=!!e.target.closest('.more,.dots')||(CA.tk===k&&now-CA.tp<350);CA.tp=now;CA.tk=k;CA.sel=s;CA.hl=null;cal(go);return}
       if(!e.target.closest('button,select,#evl')&&(CA.hl!=null||CA.sel!=null)){CA.hl=null;CA.sel=null;cal()}};
       
-      /* 回想 */
-      const RC={f:'all',q:''},done=new Set(U.rc);
-      function recInit(){const n=M.rec.length,d=M.rec.filter(r=>done.has(r[0])).length;
-      $('#t3').innerHTML='<div class="card"><div class="big">'+d+' / '+n+'</div><div class="sub">回収率 '+Math.round(d/n*100)+'%</div><div class="bar2" style="margin-top:8px"><i style="width:'+d/n*100+'%"></i></div></div><input id="rq" placeholder="名前・刀剣男士・合戦場で検索" style="margin-bottom:8px"><div class="chips" id="rf"></div><div class="card" style="padding:0" id="rl"></div>';
-      $('#rq').oninput=e=>{RC.q=e.target.value;rec()};$('#rf').onclick=e=>{if(e.target.dataset.f){RC.f=e.target.dataset.f;rec()}};rec()}
+      /* 収集（回想・場面・景趣） */
+      const RC={tab:'rec',f:'all',q:''},done=new Set(U.rc);
+      function recInit(){
+        $('#t3').innerHTML='<div class="chips" id="rtab"></div><div id="rbody"></div>';
+        $('#rtab').onclick=e=>{if(e.target.dataset.t){RC.tab=e.target.dataset.t;recTab()}};
+        recTab();
+      }
+      function recTab(){
+        $('#rtab').innerHTML=[['rec','回想'],['scene','場面'],['keishu','景趣']].map(t=>'<button class="chip'+(RC.tab==t[0]?' on':'')+'" data-t="'+t[0]+'">'+t[1]+'</button>').join('');
+        if(RC.tab!=='rec'){
+          const lbl=RC.tab==='scene'?'場面':'景趣';
+          $('#rbody').innerHTML='<div class="card"><div class="sub">'+lbl+'のデータ連携は準備中です。</div></div>';
+          return;
+        }
+        const n=M.rec.length,d=M.rec.filter(r=>done.has(r[0])).length;
+        $('#rbody').innerHTML='<div class="card"><div class="big">'+d+' / '+n+'</div><div class="sub">回収率 '+Math.round(d/n*100)+'%</div><div class="bar2" style="margin-top:8px"><i style="width:'+d/n*100+'%"></i></div></div><input id="rq" placeholder="名前・刀剣男士・合戦場で検索" style="margin-bottom:8px"><div class="chips" id="rf"></div><div class="card" style="padding:0" id="rl"></div>';
+        $('#rq').value=RC.q;
+        $('#rq').oninput=e=>{RC.q=e.target.value;rec()};
+        $('#rf').onclick=e=>{if(e.target.dataset.f){RC.f=e.target.dataset.f;rec()}};
+        rec();
+      }
       function rec(){const q=RC.q.trim();$('#rf').innerHTML=[['all','すべて'],['no','未回収'],['yes','回収済']].map(c=>'<button class="chip'+(RC.f==c[0]?' on':'')+'" data-f="'+c[0]+'">'+c[1]+'</button>').join('');
       $('#rl').innerHTML=M.rec.filter(r=>(RC.f=='all'||(RC.f=='yes')==done.has(r[0]))&&(!q||r.slice(1).join(' ').includes(q))).map(r=>'<div class="it" style="cursor:default"><div class="ic" style="background:'+(done.has(r[0])?'var(--ok)':'var(--sub)')+'">'+(done.has(r[0])?'✓':r[0])+'</div><div class="m"><b>'+esc(r[1]||'（未入力）')+'</b><span class="sub">#'+r[0]+(r[3]?' ・ '+esc(r[3]):'')+(r[4]?' ・ '+esc(r[4]):'')+'</span><div class="sub">'+esc(r[2]||'')+'</div></div></div>').join('')||'<div class="sub" style="padding:14px">該当なし</div>'}
      
