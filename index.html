@@ -228,7 +228,7 @@
         <span id="pt"></span>
         <small id="ps"></small>
       </div>
-      <small id="pv_ver">v1.1.19</small>
+      <small id="pv_ver">v1.1.20</small>
     </header>
     
     <main>
@@ -452,39 +452,89 @@
       $('#rl').innerHTML=M.rec.filter(r=>(RC.f=='all'||(RC.f=='yes')==done.has(r[0]))&&(!q||r.slice(1).join(' ').includes(q))).map(r=>'<div class="it" style="cursor:default"><div class="ic" style="background:'+(done.has(r[0])?'var(--ok)':'var(--sub)')+'">'+(done.has(r[0])?'✓':r[0])+'</div><div class="m"><b>'+esc(r[1]||'（未入力）')+'</b><span class="sub">#'+r[0]+(r[3]?' ・ '+esc(r[3]):'')+(r[4]?' ・ '+esc(r[4]):'')+'</span><div class="sub">'+esc(r[2]||'')+'</div></div></div>').join('')||'<div class="sub" style="padding:14px">該当なし</div>'}
      
       /* 道具：推移グラフ・シミュレーター */
-      const RN=['木炭','玉鋼','冷却材','砥石','小判','依頼札','手伝い札','富士札','松札','竹札','梅札','仙人団子','幕の内弁当','一口団子','手紙一式','旅装束','旅道具','遠征呼び戻し鳩','修行呼び戻し鳩','蘇言機'];
-      const RC_COL=['#b45309','#475569','#0284c7','#15803d','#d97706','#2f4aa0','#dc2626','#7c3aed','#0d9488','#65a30d','#db2777','#ea580c','#ca8a04','#e11d48','#4f46e5','#0891b2','#059669','#2563eb','#9333ea','#64748b'];
-      const RG={on:new Set([0,1,2,3,4,5,6]),span:'all',more:false};
+      const RN=new Array('木炭','玉鋼','冷却材','砥石','小判','依頼札','手伝い札','富士札','松札','竹札','梅札','仙人団子','幕の内弁当','一口団子','手紙一式','旅装束','旅道具','遠征呼び戻し鳩','修行呼び戻し鳩','蘇言機');
+      const RC_COL=new Array('#78350f','#f59e0b','#0284c7','#64748b','#b45309','#2f4aa0','#dc2626','#7c3aed','#0d9488','#65a30d','#db2777','#ea580c','#ca8a04','#e11d48','#4f46e5','#0891b2','#059669','#2563eb','#9333ea','#94a3b8');
+      const RG={on:new Set(new Array(0,1,2,3)),span:'3m',mode:'all',more:false,resOpen:false,pick:-1};
       function renderGraph(el){
-        const rows=(U.res||[]);
-        if(!rows.length){el.innerHTML='<div class="card"><div class="sub">資源メモのデータがありません。Excelを更新して反映してください。</div></div>';return}
-        const cut=RG.span==='all'?'':iso(new Date(Date.now()-(RG.span==='3m'?90:365)*864e5));
-        const ds=cut?rows.filter(r=>r[0]>=cut):rows;
-        const pts=ds.length>=2?ds:rows.slice(-2);
-        const defIdx=[0,1,2,3,4,5,6],extIdx=[7,8,9,10,11,12,13,14,15,16,17,18,19];
+        const raw=(U.res||new Array());
+        if(!raw.length){el.innerHTML='<div class="card"><div class="sub">資源メモのデータがありません。Excelを更新して反映してください。</div></div>';return}
+        const resIdx=new Array(0,1,2,3),defIdx=new Array(4,5,6),extIdx=new Array(7,8,9,10,11,12,13,14,15,16,17,18,19);
+        const allResOn=resIdx.every(i=>RG.on.has(i));
         const act=[...RG.on].sort((a,b)=>a-b);
-        const norm=act.length>1&&act.some(i=>i===4)&&act.some(i=>i!==4);
-        let maxV=1;const mins={},maxs={};
-        act.forEach(i=>{const vs=pts.map(r=>r[i+1]).filter(v=>v!=null);mins[i]=vs.length?Math.min(...vs):0;maxs[i]=vs.length?Math.max(...vs):1;if(maxs[i]>maxV)maxV=maxs[i]});
-        const W=340,H=180,PL=norm?14:44,PR=12,PT=14,PB=24,gw=W-PL-PR,gh=H-PT-PB;
+        const chipH=i=>'<button class="chip'+(RG.on.has(i)?' on':'')+'" data-ri="'+i+'" style="'+(RG.on.has(i)?'background:'+RC_COL.at(i)+';box-shadow:none':'')+'"><i style="display:inline-block;width:7px;height:7px;border-radius:50%;background:'+(RG.on.has(i)?'#fff':RC_COL.at(i))+';margin-right:4px"></i>'+RN.at(i)+'</button>';
+        const modeBar='<div class="chips" style="margin-bottom:6px" id="rmode">'+new Array(new Array('all','推移グラフ'),new Array('month','月毎の記録')).map(([k,l])=>'<button class="chip'+(RG.mode===k?' on':'')+'" data-md="'+k+'">'+l+'</button>').join('')+'</div>';
+        const resBtn='<button class="chip'+(allResOn?' on':'')+'" id="rallres" style="'+(allResOn?'background:#0f766e;box-shadow:none':'')+'"><i style="display:inline-block;width:7px;height:7px;border-radius:50%;background:'+(allResOn?'#fff':'#0f766e')+';margin-right:4px"></i>資源</button>';
+        const resToggle='<button class="chip" id="rresopen">'+(RG.resOpen?'▲ 資源を閉じる':'▼ 資源を個別選択')+'</button>';
+        const itemBar='<div class="chips" style="flex-wrap:wrap;overflow:visible" id="rchips">'+resBtn+defIdx.map(chipH).join('')+resToggle+(RG.resOpen?resIdx.map(chipH).join(''):'')+'<button class="chip" id="rmore">'+(RG.more?'▲ 他の道具を閉じる':'＋ 他の道具を表示（13種）')+'</button>'+(RG.more?extIdx.map(chipH).join(''):'')+'</div>';
+        const bindCommon=()=>{
+          $('#rmode').onclick=e=>{if(e.target.dataset.md){RG.mode=e.target.dataset.md;RG.pick=-1;renderGraph(el)}};
+          $('#rallres').onclick=()=>{if(resIdx.every(i=>RG.on.has(i))){resIdx.forEach(i=>RG.on.delete(i))}else{resIdx.forEach(i=>RG.on.add(i))}renderGraph(el)};
+          $('#rresopen').onclick=()=>{RG.resOpen=!RG.resOpen;renderGraph(el)};
+          $('#rmore').onclick=()=>{RG.more=!RG.more;renderGraph(el)};
+          $('#rchips').onclick=e=>{const b=e.target.closest('[data-ri]');if(b){const idx=+b.dataset.ri;RG.on.has(idx)?RG.on.delete(idx):RG.on.add(idx);renderGraph(el)}};
+        };
+        if(RG.mode==='month'){
+          const mp=new Map();
+          raw.forEach(r=>mp.set(r.at(0).slice(0,7),r));
+          const mRows=[...mp.values()];
+          const rev=mRows.slice().reverse();
+          const stTh='position:sticky;left:0;z-index:2;background:var(--hd);border-right:1px solid var(--line);white-space:nowrap';
+          const stTd='position:sticky;left:0;z-index:1;background:var(--hd);border-right:1px solid var(--line);white-space:nowrap';
+          const tbl=rev.map((r,idx)=>{
+            const prev=idx+1<rev.length?rev.at(idx+1):null;
+            const ym=r.at(0).slice(0,4)+'/'+ +r.at(0).slice(5,7)+'月';
+            const cells=act.map(i=>{
+              const cur=r.at(i+1),prv=prev?prev.at(i+1):null,df=cur!=null&&prv!=null?cur-prv:null;
+              const dfH=df==null?'<div class="sub">-</div>':'<div style="font-size:10.5px;color:'+(df>0?'var(--ok)':(df<0?'#c0392b':'var(--sub)'))+'">'+(df>0?'+':'')+df.toLocaleString()+'</div>';
+              return'<td style="white-space:nowrap">'+(cur!=null?cur.toLocaleString():'-')+dfH+'</td>';
+            }).join('');
+            return'<tr><td style="'+stTd+'"><b>'+ym+'</b><div class="sub">'+md(r.at(0))+'時点</div></td>'+cells+'</tr>';
+          }).join('');
+          el.innerHTML=modeBar+itemBar
+          +'<h2>月毎の所持数と前月比</h2><div class="card" style="overflow-x:auto;padding:8px"><table style="border-collapse:separate;border-spacing:0"><tr><th style="'+stTh+'">年月</th>'+act.map(i=>'<th style="white-space:nowrap"><i style="display:inline-block;width:7px;height:7px;border-radius:50%;background:'+RC_COL.at(i)+';margin-right:4px"></i>'+RN.at(i)+'</th>').join('')+'</tr>'+tbl+'</table></div>';
+          bindCommon();
+          return;
+        }
+        const cut=RG.span==='all'?'':iso(new Date(Date.now()-(RG.span==='3m'?90:365)*864e5));
+        const ds=cut?raw.filter(r=>r.at(0)>=cut):raw;
+        const pts=ds.length>=2?ds:raw.slice(-2);
+        if(RG.pick>=pts.length)RG.pick=-1;
+        const norm=act.length>1&&act.some(i=>i<=3)&&act.some(i=>i>3);
+        let rawMax=1;const mins={},maxs={};
+        act.forEach(i=>{const vs=pts.map(r=>r.at(i+1)).filter(v=>v!=null);mins[i]=vs.length?Math.min(...vs):0;maxs[i]=vs.length?Math.max(...vs):1;if(maxs[i]>rawMax)rawMax=maxs[i]});
+        const p10=Math.pow(10,Math.floor(Math.log10(rawMax)));
+        const niceUnit=(new Array(1,2,2.5,5,10).find(m=>Math.ceil(rawMax/(m*p10))<=5)||10)*p10;
+        const niceSteps=Math.max(2,Math.ceil(rawMax/niceUnit));
+        const maxV=niceUnit*niceSteps;
+        const fmtY=v=>{if(v===0)return'0';if(v>=10000){const w=Math.round(v/100)/100;return(Number.isInteger(w)?w:w.toFixed(1))+'万'}return v.toLocaleString()};
+        const W=340,H=185,PL=norm?14:44,PR=12,PT=14,PB=24,gw=W-PL-PR,gh=H-PT-PB;
         const xOf=k=>PL+(pts.length>1?k/(pts.length-1)*gw:gw/2);
         const yOf=(v,i)=>PT+gh-(norm?(maxs[i]>mins[i]?(v-mins[i])/(maxs[i]-mins[i]):0.5):(v/maxV))*gh;
         let grid='';
-        if(!norm){for(let g=0;g<=4;g++){const y=PT+gh*g/4,val=Math.round(maxV*(4-g)/4);grid+='<line x1="'+PL+'" y1="'+y+'" x2="'+(W-PR)+'" y2="'+y+'" stroke="var(--line)" stroke-width="1"/><text x="'+(PL-4)+'" y="'+(y+3)+'" text-anchor="end" font-size="9" fill="var(--sub)">'+(val>=10000?Math.round(val/1000)/10+'万':val.toLocaleString())+'</text>'}}
+        if(!norm){for(let g=0;g<=niceSteps;g++){const val=niceUnit*g,y=PT+gh*(1-g/niceSteps);grid+='<line x1="'+PL+'" y1="'+y.toFixed(1)+'" x2="'+(W-PR)+'" y2="'+y.toFixed(1)+'" stroke="var(--line)" stroke-width="1"/><text x="'+(PL-4)+'" y="'+(y+3).toFixed(1)+'" text-anchor="end" font-size="9" fill="var(--sub)">'+fmtY(val)+'</text>'}}
         else{grid+='<line x1="'+PL+'" y1="'+PT+'" x2="'+(W-PR)+'" y2="'+PT+'" stroke="var(--line)" stroke-dasharray="3"/><line x1="'+PL+'" y1="'+(PT+gh)+'" x2="'+(W-PR)+'" y2="'+(PT+gh)+'" stroke="var(--line)"/>'}
-        const xLbl=[0,Math.floor((pts.length-1)/2),pts.length-1].filter((v,i,a)=>a.indexOf(v)===i).map(k=>'<text x="'+xOf(k)+'" y="'+(H-6)+'" text-anchor="middle" font-size="9" fill="var(--sub)">'+md(pts[k][0])+'</text>').join('');
-        const lines=act.map(i=>{const c=RC_COL[i],ps=[];pts.forEach((r,k)=>{if(r[i+1]!=null)ps.push([xOf(k),yOf(r[i+1],i)])});if(!ps.length)return'';const d=ps.map((p,k)=>(k?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');const dots=ps.length<=30?ps.map(p=>'<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.2" fill="'+c+'"/>').join(''):'';return'<path d="'+d+'" fill="none" stroke="'+c+'" stroke-width="2" stroke-linejoin="round"/>'+dots}).join('');
-        const last=rows[rows.length-1],prev=rows.length>1?rows[rows.length-2]:null;
-        const chipH=i=>'<button class="chip'+(RG.on.has(i)?' on':'')+'" data-ri="'+i+'" style="'+(RG.on.has(i)?'background:'+RC_COL[i]+';box-shadow:none':'')+'"><i style="display:inline-block;width:7px;height:7px;border-radius:50%;background:'+(RG.on.has(i)?'#fff':RC_COL[i])+';margin-right:4px"></i>'+RN[i]+'</button>';
-        el.innerHTML='<div class="chips" id="rspan">'+[['3m','直近3ヶ月'],['1y','1年'],['all','全期間']].map(([k,l])=>'<button class="chip'+(RG.span===k?' on':'')+'" data-sp="'+k+'">'+l+'</button>').join('')+'</div>'
-        +'<div class="card" style="padding:12px 8px 8px"><svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block">'+grid+xLbl+lines+'</svg>'+(norm?'<div class="sub" style="text-align:right;padding:0 6px">※桁数が異なる項目を含むため相対比率で表示中</div>':'')+'</div>'
-        +'<div class="chips" style="flex-wrap:wrap;overflow:visible" id="rchips">'+defIdx.map(chipH).join('')+'<button class="chip" id="rmore">'+(RG.more?'▲ 便利道具を閉じる':'＋ 他の道具を表示（13種）')+'</button>'+(RG.more?extIdx.map(chipH).join(''):'')+'</div>'
-        +'<h2>最新の所持数（'+fmt(last[0])+'）</h2><div class="card"><table><tr><th>項目</th><th>現在数</th><th>前回比</th></tr>'
-        +act.map(i=>{const cur=last[i+1],prv=prev?prev[i+1]:null,df=cur!=null&&prv!=null?cur-prv:null;return'<tr><td><i style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+RC_COL[i]+';margin-right:6px"></i>'+RN[i]+'</td><td>'+(cur!=null?cur.toLocaleString():'-')+'</td><td style="color:'+(df>0?'var(--ok)':(df<0?'#c0392b':'var(--sub)'))+'">'+(df==null?'-':(df>0?'+':'')+df.toLocaleString())+'</td></tr>'}).join('')
+        const xLbl=new Array(0,Math.floor((pts.length-1)/2),pts.length-1).filter((v,i,a)=>a.indexOf(v)===i).map(k=>'<text x="'+xOf(k)+'" y="'+(H-6)+'" text-anchor="middle" font-size="9" fill="var(--sub)">'+md(pts.at(k).at(0))+'</text>').join('');
+        const guide=RG.pick>=0?'<line x1="'+xOf(RG.pick).toFixed(1)+'" y1="'+PT+'" x2="'+xOf(RG.pick).toFixed(1)+'" y2="'+(PT+gh)+'" stroke="var(--ac2)" stroke-width="1.2" stroke-dasharray="3"/>':'';
+        const lines=act.map(i=>{const c=RC_COL.at(i),ps=new Array();pts.forEach((r,k)=>{if(r.at(i+1)!=null)ps.push(new Array(xOf(k),yOf(r.at(i+1),i),k))});if(!ps.length)return'';const d=ps.map((p,k)=>(k?'L':'M')+p.at(0).toFixed(1)+','+p.at(1).toFixed(1)).join(' ');const dots=ps.map(p=>{const sel=p.at(2)===RG.pick;return'<circle data-pk="'+p.at(2)+'" cx="'+p.at(0).toFixed(1)+'" cy="'+p.at(1).toFixed(1)+'" r="'+(sel?4.5:(ps.length<=35?2.6:1.8))+'" fill="'+(sel?'var(--hd)':c)+'" stroke="'+c+'" stroke-width="'+(sel?2:0)+'" style="cursor:pointer"/>'}).join('');return'<path d="'+d+'" fill="none" stroke="'+c+'" stroke-width="2" stroke-linejoin="round"/>'+dots}).join('');
+        const hitW=pts.length>1?gw/(pts.length-1):gw;
+        const hits=pts.map((_,k)=>'<rect data-pk="'+k+'" x="'+(xOf(k)-hitW/2).toFixed(1)+'" y="'+PT+'" width="'+hitW.toFixed(1)+'" height="'+gh+'" fill="transparent" style="cursor:pointer"/>').join('');
+        let tip='';
+        if(RG.pick>=0){
+          const pr=pts.at(RG.pick);
+          tip='<div style="padding:2px 6px 6px"><div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:4px">'+fmt(pr.at(0))+'</div><div style="display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px">'+act.map(i=>'<span><i style="display:inline-block;width:7px;height:7px;border-radius:50%;background:'+RC_COL.at(i)+';margin-right:4px"></i>'+RN.at(i)+'：<b>'+(pr.at(i+1)!=null?pr.at(i+1).toLocaleString():'-')+'</b></span>').join('')+'</div></div>';
+        }
+        const last=raw.at(-1),prev=raw.length>1?raw.at(-2):null;
+        const prevLbl=prev?fmt(prev.at(0))+'比':'比較対象なし';
+        const spanBar='<div class="chips" style="margin-bottom:6px" id="rspan">'+new Array(new Array('3m','直近3ヶ月'),new Array('1y','1年'),new Array('all','全期間')).map(([k,l])=>'<button class="chip'+(RG.span===k?' on':'')+'" data-sp="'+k+'">'+l+'</button>').join('')+'</div>';
+        el.innerHTML=modeBar+spanBar
+        +'<div class="card" style="padding:10px 8px 8px">'+tip+'<svg id="rsvg" viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block">'+grid+guide+xLbl+lines+hits+'</svg>'+(norm?'<div class="sub" style="text-align:right;padding:2px 6px 0">※単位が異なる資源と道具を同時表示中のため相対比率で描画</div>':'')+'</div>'
+        +itemBar
+        +'<h2>最新の所持数（'+fmt(last.at(0))+'の記録）</h2><div class="card"><table><tr><th>項目</th><th>現在数</th><th>'+prevLbl+'</th></tr>'
+        +act.map(i=>{const cur=last.at(i+1),prv=prev?prev.at(i+1):null,df=cur!=null&&prv!=null?cur-prv:null;return'<tr><td><i style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+RC_COL.at(i)+';margin-right:6px"></i>'+RN.at(i)+'</td><td>'+(cur!=null?cur.toLocaleString():'-')+'</td><td style="color:'+(df>0?'var(--ok)':(df<0?'#c0392b':'var(--sub)'))+'">'+(df==null?'-':(df>0?'+':'')+df.toLocaleString())+'</td></tr>'}).join('')
         +'</table></div>';
-        $('#rspan').onclick=e=>{if(e.target.dataset.sp){RG.span=e.target.dataset.sp;renderGraph(el)}};
-        $('#rmore').onclick=()=>{RG.more=!RG.more;renderGraph(el)};
-        $('#rchips').onclick=e=>{const b=e.target.closest('[data-ri]');if(b){const idx=+b.dataset.ri;RG.on.has(idx)?RG.on.delete(idx):RG.on.add(idx);renderGraph(el)}};
+        bindCommon();
+        $('#rspan').onclick=e=>{if(e.target.dataset.sp){RG.span=e.target.dataset.sp;RG.pick=-1;renderGraph(el)}};
+        $('#rsvg').onclick=e=>{const p=e.target.closest('[data-pk]');if(p){const idx=+p.dataset.pk;RG.pick=RG.pick===idx?-1:idx;renderGraph(el)}};
       }
       const TOOLS=[{id:'graph',n:'推移グラフ',d:'資源・札・便利道具の移り変わり',ic:'<path d="M4 19V5M4 19h16M7 15l4-5 3 3 5-7"/>',render:renderGraph},{id:'sim',n:'シミュレーター',d:'錬結・鍛刀・遠征などの計算',ic:'<rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8 7h8M8 12h2M12 12h2M8 16h2M12 16h2"/>'}],TL={cur:''};
       function tools(){const t=TOOLS.find(x=>x.id==TL.cur);if(t&&t.render){$('#t4').innerHTML='<div class="row"><button class="btn" id="tb">◀ 道具一覧</button></div><div id="tbody"></div>';$('#tb').onclick=()=>{TL.cur='';tools()};t.render($('#tbody'));return}
